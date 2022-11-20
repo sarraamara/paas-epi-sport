@@ -1,0 +1,9 @@
+spring:
+  rabbitmq:
+    host: 172.31.249.86
+    password: test
+    port: 15672
+    username: test
+    exchange: userheartrate.exchange
+    queue: userheartrate.queue
+    routingkey: userheartrate.routingkey

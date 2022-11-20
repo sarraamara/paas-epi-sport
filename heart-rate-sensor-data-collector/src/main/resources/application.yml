@@ -1,0 +1,12 @@
+app:
+  message: heart rate data succesfully sent
+spring:
+  rabbitmq:
+    host: 172.31.249.86
+    password: test
+    port: 15672
+    username: test
+    exchange: userheartrate.exchange
+    routingkey: userheartrate.routingkey
+server:
+  port: 8081
