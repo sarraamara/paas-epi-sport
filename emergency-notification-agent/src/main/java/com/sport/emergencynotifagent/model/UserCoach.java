@@ -2,8 +2,11 @@ package com.sport.emergencynotifagent.model;
 
 import lombok.*;
 
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Getter
 @Setter
@@ -11,11 +14,14 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @ToString
 @Entity
-public class CoachProfile {
+@Table(name = "userCoach")
+public class UserCoach {
 
     @Id
+    @Column(name="userCoachId")
+    private int userCoachId;
+
+    private int userId;
     private int coachId;
 
-    private String lastname;
-    private String firstname;
 }

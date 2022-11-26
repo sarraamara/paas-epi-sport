@@ -11,3 +11,4 @@ public class UserHeartRate {
     private String userId;
     private float heartRate;
 }
+
