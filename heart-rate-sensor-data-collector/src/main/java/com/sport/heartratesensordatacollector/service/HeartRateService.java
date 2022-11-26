@@ -19,7 +19,7 @@ public class HeartRateService {
     @Value("${spring.rabbitmq.exchange}")
     private String exchange;
 
-    @Value("${spring.rabbitmq.routingkey}")
+    @Value("${spring.rabbitmq.routingkey_hr}")
     private String routingkey;
 
     public void sendMessage(UserHeartRate userHeartRate) {
