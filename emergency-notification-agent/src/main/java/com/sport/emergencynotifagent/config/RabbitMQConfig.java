@@ -1,4 +1,4 @@
-package com.sport.heartratesensordataworker.config;
+package com.sport.emergencynotifagent.config;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -12,13 +12,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    @Value("${spring.rabbitmq.queue_hr}")
+    @Value("${spring.rabbitmq.queue_emergency}")
     private String queue;
 
     @Value("${spring.rabbitmq.exchange}")
     private String exchange;
 
-    @Value("${spring.rabbitmq.routingkey_hr}")
+    @Value("${spring.rabbitmq.routingkey_emergency}")
     private String routingKey;
 
     @Value("${spring.rabbitmq.username}")

@@ -5,6 +5,5 @@ spring:
     port: 15672
     username: test
     exchange: epi.sport.exchange
-    queue_hr: userheartrate.queue
-    routingkey_hr: userheartrate.routingkey
+    queue_emergency: emergency.queue
     routingkey_emergency: emergency.routingkey
