@@ -1,2 +1,9 @@
-package com.sport.usersapi;public class User {
+package com.sport.usersapi;
+
+
+import org.springframework.data.annotation.Id;
+
+public class User {
+    @Id
+    String userId;
 }
