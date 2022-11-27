@@ -55,6 +55,7 @@ public class HeartRateService {
         rabbitTemplate.convertAndSend(exchange,routingkey, userHeartRate);
     }
 
+    /** TO DO**/
     private void saveEmergency(UserHeartRate userHeartRate) {
         logger.info("Saving userHeartRate Emergency Data:" + userHeartRate);
 

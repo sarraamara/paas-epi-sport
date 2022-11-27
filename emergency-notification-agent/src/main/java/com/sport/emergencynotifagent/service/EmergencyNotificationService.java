@@ -29,7 +29,7 @@ public class EmergencyNotificationService {
     @Value("${spring.rabbitmq.exchange}")
     private String exchange;
 
-    @Value("${spring.rabbitmq.routingkey_emergency}")
+    @Value("${spring.rabbitmq.routingkey_notif}")
     private String routingkey;
 
     private static final Logger logger = LoggerFactory.getLogger(EmergencyNotificationService.class);
@@ -39,13 +39,14 @@ public class EmergencyNotificationService {
 
         return userCoachRepository.findUserCoachesByUserId(Integer.parseInt(userId));
     }
-    /** TO DO**/
     private boolean verifyCoachSessionInCache(CoachProfile coach) {
         return redisTemplate.hasKey(String.valueOf(coach.getCoachId()));
     }
 
-    /** TO DO**/
     private void sendToNotifChannelQueue(UserCoach coach) {
+        logger.info("Sending to notif channel queue :" +coach.toString());
+        //rabbitTemplate.convertAndSend(exchange,routingkey,coach);
+
     }
     @RabbitListener(queues = "${spring.rabbitmq.queue_emergency}")
     public void receivedMessage(UserHeartRate userHeartRate) {
