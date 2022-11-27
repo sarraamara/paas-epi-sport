@@ -7,6 +7,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @SpringBootApplication
 @EnableRedisRepositories
@@ -29,6 +30,7 @@ public class NotificationChannelManagerApplication {
 	public RedisTemplate<?, ?> redisTemplate(RedisConnectionFactory connectionFactory) {
 		RedisTemplate<?, ?> template = new RedisTemplate<>();
 		template.setConnectionFactory(connectionFactory);
+		template.setDefaultSerializer(new StringRedisSerializer());
 		return template;
 	}
 }

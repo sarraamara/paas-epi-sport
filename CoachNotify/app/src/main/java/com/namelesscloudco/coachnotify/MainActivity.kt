@@ -43,12 +43,13 @@ class MainActivity : AppCompatActivity() {
     private fun notifyAbsence(name: String) {
         Log.d("notify", "Notify absence coach : $name")
         val request: retrofit2.Call<String> = RetrofitHelper.getInstance().create(GetAPI::class.java).delete(name)
-        request.execute()
+        request.execute().body()?.let { Log.i("notify", it) };
     }
 
     private fun notifyPresence(name: String) {
         Log.d("notify", "Notify presence coach : $name")
        val request: retrofit2.Call<String> = RetrofitHelper.getInstance().create(GetAPI::class.java).notify(name)
-        request.execute()
+        request.execute().body()?.let { Log.i("notify", it) };
+
     }
 }

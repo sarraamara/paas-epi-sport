@@ -15,4 +15,11 @@ import java.io.Serializable;
 public class Coach implements Serializable {
     @Id
     private String coachId;
+
+    @Override
+    public String toString() {
+        return "Coach{" +
+                "coachId='" + coachId + '\'' +
+                '}';
+    }
 }

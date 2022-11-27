@@ -5,9 +5,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.logging.Logger;
 
 @RestController
@@ -40,13 +38,13 @@ public class NotifyCoachController {
     }
     @GetMapping("/get-session")
     public Iterable<Coach> getSessions() {
-        List<String> coaches = template.opsForValue().multiGet(Collections.singleton("*"));
-        List<Coach> final_coaches = new java.util.ArrayList<>();
-        for (String coach : coaches) {
-            Coach tmp = new Coach(coach);
-            LOGGER.info(tmp.toString());
-            final_coaches.add(tmp);
+        Set<String> redisKeys = template.keys("*");
+// Store the keys in a List
+        List<Coach> coaches = new ArrayList<>();
+        for (String redisKey : redisKeys) {
+            Coach coach = new Coach(redisKey);
+            coaches.add(coach);
         }
-        return final_coaches;
+        return coaches;
     }
 }
