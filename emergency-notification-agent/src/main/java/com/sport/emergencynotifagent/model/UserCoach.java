@@ -3,10 +3,7 @@ package com.sport.emergencynotifagent.model;
 import lombok.*;
 
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -21,7 +18,12 @@ public class UserCoach {
     @Column(name="userCoachId")
     private int userCoachId;
 
-    private int userId;
-    private int coachId;
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private UserProfile userProfile;
+
+    @ManyToOne
+    @JoinColumn(name = "coachId")
+    private CoachProfile coachProfile;
 
 }
