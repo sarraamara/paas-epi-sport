@@ -3,4 +3,5 @@
     <string name="entrez_votre_nom">Entrez votre nom</string>
     <string name="bonjour_coach">Bonjour, coach</string>
     <string name="notifier_sa_pr_sence">Notifier sa présence</string>
+    <string name="notifier_son_depart">Notifier son départ</string>
 </resources>
