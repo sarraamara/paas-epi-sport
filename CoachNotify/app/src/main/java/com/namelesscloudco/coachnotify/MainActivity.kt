@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Success!", Toast.LENGTH_LONG).show()
             } catch (e:java.lang.Exception) {
                 Toast.makeText(this, "Error!", Toast.LENGTH_LONG).show()
+                Log.i("error",e.toString())
             }
         }
         button2.setOnClickListener {
@@ -36,19 +37,20 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Success!", Toast.LENGTH_LONG).show()
             } catch (e:java.lang.Exception) {
                 Toast.makeText(this, "Error!", Toast.LENGTH_LONG).show()
+                Log.i("error",e.toString())
             }
         }
     }
 
     private fun notifyAbsence(name: String) {
-        Log.d("notify", "Notify absence coach : $name")
         val request: retrofit2.Call<String> = RetrofitHelper.getInstance().create(GetAPI::class.java).delete(name)
+        Log.i("request", request.request().url().toString())
         request.execute().body()?.let { Log.i("notify", it) };
     }
 
     private fun notifyPresence(name: String) {
-        Log.d("notify", "Notify presence coach : $name")
        val request: retrofit2.Call<String> = RetrofitHelper.getInstance().create(GetAPI::class.java).notify(name)
+        Log.i("request", request.request().url().toString())
         request.execute().body()?.let { Log.i("notify", it) };
 
     }
