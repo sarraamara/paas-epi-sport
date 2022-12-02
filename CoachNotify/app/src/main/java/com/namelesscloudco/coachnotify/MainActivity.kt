@@ -7,6 +7,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class MainActivity : AppCompatActivity() {
@@ -43,15 +46,32 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun notifyAbsence(name: String) {
-        val request: retrofit2.Call<String> = RetrofitHelper.getInstance().create(GetAPI::class.java).delete(name)
-        Log.i("request", request.request().url().toString())
-        request.execute().body()?.let { Log.i("notify", it) };
+        val request: Call<String> = RetrofitHelper.getInstance().create(GetAPI::class.java).delete(name)
+        Log.i("request", request.request().url().toString() + ", REQUEST TYPE : " + request.request().method())
+//        request.execute().body()?.let { Log.i("notify", it) };
+        request.enqueue(object : Callback<String?> {
+            override fun onResponse(call: Call<String?>, response: Response<String?>) {
+                Log.i("success",response.body().toString())
+            }
+
+            override fun onFailure(call: Call<String?>, t: Throwable) {
+                Log.i("error",t.toString())
+            }
+        })
     }
 
     private fun notifyPresence(name: String) {
-       val request: retrofit2.Call<String> = RetrofitHelper.getInstance().create(GetAPI::class.java).notify(name)
-        Log.i("request", request.request().url().toString())
-        request.execute().body()?.let { Log.i("notify", it) };
+       val request: Call<String> = RetrofitHelper.getInstance().create(GetAPI::class.java).notify(name)
+        Log.i("request", request.request().url().toString()+ ", REQUEST TYPE : " + request.request().method())
+//        request.execute().body()?.let { Log.i("notify", it) };
+        request.enqueue(object : Callback<String?> {
+            override fun onResponse(call: Call<String?>, response: Response<String?>) {
+                Log.i("success",response.body().toString())
+            }
 
+            override fun onFailure(call: Call<String?>, t: Throwable) {
+                Log.i("error",t.toString())
+            }
+        })
     }
 }
