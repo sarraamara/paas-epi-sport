@@ -2,33 +2,39 @@ package com.sport.usersapi;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
 
-@Controller
+@RestController
+@RequestMapping("/users")
 public class UserController {
     @Autowired
     UserRepository userRepository;
 
-    @GetMapping("/users/get-user/{userId}")
+    @GetMapping("/get-user/{userId}")
     public User findAllById(@PathVariable("userId") Long userId) {
-        User user = userRepository.findUserByUserId(userId);
-        System.out.println(user);
-        return user;
+        return userRepository.findById(userId).orElse(null);
     }
-    @GetMapping("/users/get-users")
-    public Iterable<User> findAll() {
-        Iterable<User> users = userRepository.findAll();
-        System.out.println(users);
-        return users;
+    @GetMapping("/")
+    public List<User> findAll() {
+        return userRepository.findAll();
     }
-    @PostMapping("/users/del-user/{userId}")
+    @PostMapping("/del-user/{userId}")
     public void deleteById(@PathVariable("userId") Long userId) {
         userRepository.deleteByUserId(userId);
+    }
+    @PostMapping("/save-user/{userId}/{lastname}/{firstname}/{age}/{weight}/{height}")
+    public void save(@PathVariable("userId") Long userid,
+                     @PathVariable("lastname") String lastname,
+                     @PathVariable("firstname") String firstname,
+                     @PathVariable("age") int age,
+                     @PathVariable("weight") int weight,
+                     @PathVariable("height") int height) {
+        User user = new User();
+        user.setUserId(userid); user.setLastname(lastname); user.setAge(age); user.setWeight(weight); user.setFirstname(firstname); user.setWeight(weight); user.setHeight(height);
+        userRepository.save(user);
     }
 }

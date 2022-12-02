@@ -9,7 +9,7 @@ import jakarta.persistence.*;
 public class User {
     @Id
     @Column(name = "user_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @GeneratedValue(strategy = GenerationType.AUTO)
     Long userId;
 
     @Column(name = "lastname")
