@@ -1,19 +1,16 @@
 package com.sport.usersapi;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 
 @Entity
 @Table(name = "userProfile")
 public class User {
-
     @Id
-    @Column(name = "userId", nullable = false)
-    int userId;
+    @Column(name = "userId")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    Long userId;
 
     @Column(name = "lastname")
     String lastname;
@@ -42,11 +39,11 @@ public class User {
                 '}';
     }
 
-    public int getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
