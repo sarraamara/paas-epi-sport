@@ -13,15 +13,16 @@
         android:layout_height="729dp"
         android:orientation="vertical"
         tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="146dp">
+        tools:layout_editor_absoluteY="146dp"
+        tools:ignore="MissingConstraints">
 
         <EditText
             android:id="@+id/editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:hint="@string/entrez_votre_nom"
-            android:inputType="text" />
+            android:hint="@int/entrez_votre_id_coach"
+            android:inputType="number" />
 
         <Button
             android:id="@+id/button"

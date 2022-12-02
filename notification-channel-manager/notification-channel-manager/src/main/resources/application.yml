@@ -1,0 +1,9 @@
+spring:
+  rabbitmq:
+    host: 172.31.250.226
+    password: test
+    port: 15672
+    username: test
+    exchange: epi.sport.exchange
+    queue_notif: notif.queue
+    routingkey_notif: notif.routingkey

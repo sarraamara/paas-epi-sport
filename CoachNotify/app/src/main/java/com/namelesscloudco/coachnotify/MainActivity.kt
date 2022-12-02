@@ -1,8 +1,9 @@
 package com.namelesscloudco.coachnotify
 
+
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -19,20 +20,34 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         button = findViewById(R.id.button)
         button2 = findViewById(R.id.button2)
+        button2.isEnabled = false
         editText = findViewById(R.id.editText)
+        val intent = Intent(this, NotificationService::class.java)
+
         button.setOnClickListener {
-            val name = editText.text
             try {
-                notifyPresence(name.toString())
-                Toast.makeText(this, "Success!", Toast.LENGTH_LONG).show()
+                    button?.isEnabled = false
+                    button2?.isEnabled = true
+                    val idCoach = editText.text.toString()
+                    notifyPresence(idCoach)
+                    intent.putExtra("idCoach", idCoach)
+                    startForegroundService(intent)
+                    System.out.println("heey")
+                    Toast.makeText(this, "Success!", Toast.LENGTH_LONG).show()
+
+
             } catch (e:java.lang.Exception) {
+                e.printStackTrace()
                 Toast.makeText(this, "Error!", Toast.LENGTH_LONG).show()
             }
         }
         button2.setOnClickListener {
-            val name = editText.text
+            button?.isEnabled = true
+            button2?.isEnabled = false
+            val idCoach = editText.text.toString();
             try {
-                notifyAbsence(name.toString())
+                stopService(intent)
+                notifyAbsence(idCoach)
                 Toast.makeText(this, "Success!", Toast.LENGTH_LONG).show()
             } catch (e:java.lang.Exception) {
                 Toast.makeText(this, "Error!", Toast.LENGTH_LONG).show()
@@ -40,16 +55,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun notifyAbsence(name: String) {
-        Log.d("notify", "Notify absence coach : $name")
-        val request: retrofit2.Call<String> = RetrofitHelper.getInstance().create(GetAPI::class.java).delete(name)
+    private fun notifyAbsence(idCoach: String) {
+        Log.d("notify", "Notify absence coach : $idCoach")
+        val request: retrofit2.Call<String> = RetrofitHelper.getInstance().create(GetAPI::class.java).delete(idCoach)
         request.execute().body()?.let { Log.i("notify", it) };
     }
 
-    private fun notifyPresence(name: String) {
-        Log.d("notify", "Notify presence coach : $name")
-       val request: retrofit2.Call<String> = RetrofitHelper.getInstance().create(GetAPI::class.java).notify(name)
+    private fun notifyPresence(idCoach: String) {
+        Log.d("notify", "Notify presence coach : $idCoach")
+       val request: retrofit2.Call<String> = RetrofitHelper.getInstance().create(GetAPI::class.java).notify(idCoach)
         request.execute().body()?.let { Log.i("notify", it) };
 
     }
+
+
+
 }
