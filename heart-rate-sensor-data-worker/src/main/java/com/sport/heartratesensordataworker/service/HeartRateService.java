@@ -9,6 +9,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class HeartRateService {
@@ -31,14 +32,16 @@ public class HeartRateService {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    /***TO DO***/
     private boolean checkUserSubscription(String userId) {
-        /** SEND REQUEST TO UserProfileService**/
+        final String uri = "http://localhost:8080/users/get-user/" + userId;
+
+        RestTemplate restTemplate = new RestTemplate();
+        String result = restTemplate.getForObject(uri, String.class);
+        System.out.println(result);
         logger.info("Checking user " + userId + " subscription");
-        return true;
+        return !result.isEmpty();
     }
 
-    /***TO DO***/
     private boolean checkEmergency(UserHeartRate userHeartRate){
         logger.info("Checking emergency:" + userHeartRate);
         if(userHeartRate.getHeartRate() > 220){

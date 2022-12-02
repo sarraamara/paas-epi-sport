@@ -11,7 +11,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Getter
 @Setter
-@RedisHash(value = "Coach", timeToLive = 600)
+@RedisHash(value = "Coach")
 public class Coach implements Serializable {
     @Id
     private String coachId;
@@ -22,4 +22,13 @@ public class Coach implements Serializable {
                 "coachId='" + coachId + '\'' +
                 '}';
     }
+
+    public String getCoachId() {
+        return coachId;
+    }
+
+    public void setCoachId(String coachId) {
+        this.coachId = coachId;
+    }
+
 }

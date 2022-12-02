@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 @RestController
@@ -21,8 +22,7 @@ public class NotifyCoachController {
     @ResponseStatus(HttpStatus.CREATED)
     public void saveSession(@PathVariable String coachId) {
         LOGGER.info("SAVING SESSION, COACHID="+coachId);
-        template.opsForValue().set(STRING_KEY_PREFIX + coachId, "coach"+coachId);
-//        notifyCoachRepository.save(new Coach(coachId));
+        template.opsForValue().set(STRING_KEY_PREFIX + coachId, "coach"+coachId,10, TimeUnit.MINUTES);
     }
 
     @PostMapping("/del-session/{coachId}")
@@ -39,8 +39,8 @@ public class NotifyCoachController {
     @GetMapping("/get-session")
     public Iterable<Coach> getSessions() {
         Set<String> redisKeys = template.keys("*");
-// Store the keys in a List
         List<Coach> coaches = new ArrayList<>();
+        assert redisKeys != null;
         for (String redisKey : redisKeys) {
             Coach coach = new Coach(redisKey);
             coaches.add(coach);

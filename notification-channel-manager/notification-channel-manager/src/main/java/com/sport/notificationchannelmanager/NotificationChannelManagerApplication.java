@@ -17,15 +17,6 @@ public class NotificationChannelManagerApplication {
 		SpringApplication.run(NotificationChannelManagerApplication.class, args);
 	}
 
-//	@Bean
-//	JedisConnectionFactory jedisConnectionFactory() {
-//		JedisConnectionFactory jedisConFactory
-//				= new JedisConnectionFactory();
-//		jedisConFactory.setHostName("172.31.250.236");
-//		jedisConFactory.setPort(6379);
-//		return jedisConFactory;
-//	}
-
 	@Bean
 	public RedisTemplate<?, ?> redisTemplate(RedisConnectionFactory connectionFactory) {
 		RedisTemplate<?, ?> template = new RedisTemplate<>();
