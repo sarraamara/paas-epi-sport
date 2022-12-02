@@ -1,5 +1,7 @@
 package com.sport.notificationchannelmanager;
 
+import com.sport.notificationchannelmanager.model.UserCoach;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -46,5 +48,10 @@ public class NotifyCoachController {
             coaches.add(coach);
         }
         return coaches;
+    }
+
+    @RabbitListener(queues = "${spring.rabbitmq.queue_notif}")
+    public void receivedMessage(UserCoach userCoach) {
+        LOGGER.info(userCoach.toString());
     }
 }

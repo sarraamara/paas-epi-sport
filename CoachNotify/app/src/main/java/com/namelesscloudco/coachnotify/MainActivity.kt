@@ -1,5 +1,7 @@
 package com.namelesscloudco.coachnotify
 
+
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 
@@ -22,21 +24,35 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         button = findViewById(R.id.button)
         button2 = findViewById(R.id.button2)
+        button2.isEnabled = false
         editText = findViewById(R.id.editText)
+        val intent = Intent(this, NotificationService::class.java)
+        val name = editText.text
+
         button.setOnClickListener {
-            val name = editText.text
             try {
-                notifyPresence(name.toString())
-                Toast.makeText(this, "Success!", Toast.LENGTH_LONG).show()
+                    button?.isEnabled = false
+                    button2?.isEnabled = true
+                    val idCoach = editText.text.toString()
+                    notifyPresence(name)
+                    intent.putExtra("idCoach", idCoach)
+                    startForegroundService(intent)
+                    System.out.println("heey")
+                    Toast.makeText(this, "Success!", Toast.LENGTH_LONG).show()
+
+
             } catch (e:java.lang.Exception) {
                 Toast.makeText(this, "Error!", Toast.LENGTH_LONG).show()
                 Log.i("error",e.toString())
             }
         }
         button2.setOnClickListener {
-            val name = editText.text
+            button?.isEnabled = true
+            button2?.isEnabled = false
+            val idCoach = editText.text.toString();
             try {
-                notifyAbsence(name.toString())
+                stopService(intent)
+                notifyAbsence(name)
                 Toast.makeText(this, "Success!", Toast.LENGTH_LONG).show()
             } catch (e:java.lang.Exception) {
                 Toast.makeText(this, "Error!", Toast.LENGTH_LONG).show()
