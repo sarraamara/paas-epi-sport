@@ -5,10 +5,10 @@ import jakarta.persistence.*;
 
 
 @Entity
-@Table(name = "userProfile")
+@Table(name = "user_profile")
 public class User {
     @Id
-    @Column(name = "userId")
+    @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long userId;
 

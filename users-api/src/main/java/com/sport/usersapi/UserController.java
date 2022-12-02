@@ -16,14 +16,14 @@ public class UserController {
     UserRepository userRepository;
 
     @GetMapping("/users/get-user/{userId}")
-    public Optional<User> findAllById(@PathVariable("userId") Long userId) {
-        Optional<User> user = Optional.ofNullable(userRepository.getUserByUserId(userId));
+    public User findAllById(@PathVariable("userId") Long userId) {
+        User user = userRepository.findUserByUserId(userId);
         System.out.println(user);
-        return userRepository.findById(userId);
+        return user;
     }
     @GetMapping("/users/get-users")
     public Iterable<User> findAll() {
-        Iterable<User> users = userRepository.getAll();
+        Iterable<User> users = userRepository.findAll();
         System.out.println(users);
         return users;
     }
