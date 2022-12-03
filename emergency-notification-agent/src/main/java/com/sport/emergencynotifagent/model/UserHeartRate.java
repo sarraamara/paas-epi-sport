@@ -9,6 +9,6 @@ import lombok.*;
 @Setter
 public class UserHeartRate {
     private String userId;
-    private float heartRate;
+    private int heartRate;
 }
 

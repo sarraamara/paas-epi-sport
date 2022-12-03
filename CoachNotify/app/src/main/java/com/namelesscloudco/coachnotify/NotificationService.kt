@@ -8,6 +8,10 @@ import android.os.Handler
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.namelesscloudco.coachnotify.model.UserCoachHeartRate
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.*
 
 
@@ -83,7 +87,7 @@ class NotificationService : Service() {
    fun initializeTimerTask() {
       timerTask = object : TimerTask() {
          override fun run() {
-            handler.post(Runnable { sendNotification() })
+            handler.post(Runnable { fetchEmergencyNotification() })
          }
       }
    }
@@ -100,12 +104,14 @@ class NotificationService : Service() {
          longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
       notificationManager?.createNotificationChannel(channel)
    }
-   private fun sendNotification() {
+
+   private fun sendNotification(notifContent: UserCoachHeartRate) {
       System.out.println("Sending notification..")
       notificationManager?.cancelAll()
       val mBuilder = NotificationCompat.Builder(applicationContext, default_notification_channel_id)
       mBuilder.setContentTitle("Urgence")
-      mBuilder.setContentText("Le rythme cardiaque de AMARA Sarra est de : 240bpm")
+      mBuilder.setContentText("Le rythme cardiaque de "+notifContent.userCoach.userProfile.lastname+
+              " "+notifContent.userCoach.userProfile.firstname+" est de "+notifContent.heartRate+ ".")
       mBuilder.setTicker("Notification d'urgence")
       mBuilder.setAutoCancel(true)
       mBuilder.setSmallIcon(R.drawable.ic_dialog_info)
@@ -113,6 +119,22 @@ class NotificationService : Service() {
       mBuilder.setChannelId(ID_COACH)
 
       notificationManager!!.notify(System.currentTimeMillis().toInt(), mBuilder.build())
+   }
+
+   private fun fetchEmergencyNotification() {
+      val request: Call<UserCoachHeartRate> = RetrofitHelper.getInstance().create(GetAPI::class.java).fetchNotif(Integer.parseInt(ID_COACH))
+      Log.i("request", request.request().url().toString()+ ", REQUEST TYPE : " + request.request().method())
+
+      request.enqueue(object : Callback<UserCoachHeartRate?> {
+         override fun onResponse(call: Call<UserCoachHeartRate?>, response: Response<UserCoachHeartRate?>) {
+            Log.i("NOTIF", response.body().toString())
+            response.body()?.let { sendNotification(it) }
+         }
+
+         override fun onFailure(call: Call<UserCoachHeartRate?>, t: Throwable) {
+            Log.i("NOTIF", "Pas d'urgence")
+         }
+      })
    }
 
 }

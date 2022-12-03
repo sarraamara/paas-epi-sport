@@ -1,6 +1,7 @@
 package com.sport.notificationchannelmanager;
 
 import com.sport.notificationchannelmanager.model.UserCoach;
+import com.sport.notificationchannelmanager.model.UserCoachHeartRate;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -19,6 +20,8 @@ public class NotifyCoachController {
     private static final String STRING_KEY_PREFIX = "coach:";
     @Autowired
     NotifyCoachRepository notifyCoachRepository;
+
+    Map<Integer, UserCoachHeartRate> usersNotification = new HashMap<>();
     private static final Logger LOGGER = Logger.getLogger(NotifyCoachController.class.getName());
     @PostMapping("/save-session/{coachId}")
     @ResponseStatus(HttpStatus.CREATED)
@@ -50,8 +53,22 @@ public class NotifyCoachController {
         return coaches;
     }
 
-    @RabbitListener(queues = "${spring.rabbitmq.queue_notif}")
-    public void receivedMessage(UserCoach userCoach) {
-        LOGGER.info(userCoach.toString());
+    @GetMapping("/get-notif/{coachId}")
+    public UserCoachHeartRate getNotification(@PathVariable int coachId) {
+        UserCoachHeartRate userCoach =  null;
+
+        if(usersNotification.containsKey(coachId)){
+            userCoach = usersNotification.get(coachId);
+            usersNotification.remove(coachId);
+            return userCoach;
+        }
+
+        return null;
     }
+    @RabbitListener(queues = "${spring.rabbitmq.queue_notif}")
+    public void receivedMessage(UserCoachHeartRate notifContent) {
+        LOGGER.info(notifContent.toString());
+        usersNotification.put(notifContent.getUserCoach().getCoachProfile().getCoachId(), notifContent);//overwrite existent notification if it exists
+    }
+
 }

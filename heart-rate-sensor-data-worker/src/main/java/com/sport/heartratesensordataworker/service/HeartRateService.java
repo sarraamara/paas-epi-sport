@@ -42,6 +42,7 @@ public class HeartRateService {
         return !result.isEmpty();
     }
 
+    /** TO DO **/
     private boolean checkEmergency(UserHeartRate userHeartRate){
         logger.info("Checking emergency:" + userHeartRate);
         if(userHeartRate.getHeartRate() > 220){

@@ -12,11 +12,11 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @ToString
 @Entity
-@Table(name = "userProfile")
+@Table(name = "user_profile")
 public class UserProfile {
 
     @Id
-    @Column(name = "userId")
+    @Column(name = "user_id")
     private int userId;
 
     private String lastname;

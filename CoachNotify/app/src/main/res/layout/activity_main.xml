@@ -21,8 +21,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:hint="@int/entrez_votre_id_coach"
-            android:inputType="number" />
+            android:hint="entrez_votre_coach_id"
+            android:inputType="text" />
 
         <Button
             android:id="@+id/button"

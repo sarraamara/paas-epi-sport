@@ -15,5 +15,5 @@ import java.io.Serializable;
 @Component
 public class UserHeartRate implements Serializable {
     private String userId;
-    private float heartRate;
+    private int heartRate;
 }

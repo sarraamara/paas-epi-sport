@@ -2,6 +2,7 @@ package com.sport.emergencynotifagent.service;
 
 import com.sport.emergencynotifagent.model.CoachProfile;
 import com.sport.emergencynotifagent.model.UserCoach;
+import com.sport.emergencynotifagent.model.UserCoachHeartRate;
 import com.sport.emergencynotifagent.model.UserHeartRate;
 
 import com.sport.emergencynotifagent.repository.UserCoachRepository;
@@ -40,12 +41,12 @@ public class EmergencyNotificationService {
         return userCoachRepository.findUserCoachesByUserId(Integer.parseInt(userId));
     }
     private boolean verifyCoachSessionInCache(CoachProfile coach) {
-        return redisTemplate.hasKey(String.valueOf(coach.getCoachId()));
+        return redisTemplate.hasKey("coach:"+String.valueOf(coach.getCoachId()));
     }
 
-    private void sendToNotifChannelQueue(UserCoach coach) {
-        logger.info("Sending to notif channel queue :" +coach.toString());
-        //rabbitTemplate.convertAndSend(exchange,routingkey,coach);
+    private void sendToNotifChannelQueue(UserCoachHeartRate notifContent) {
+        logger.info("Sending to notif channel queue :" +notifContent.toString());
+        rabbitTemplate.convertAndSend(exchange,routingkey,notifContent);
 
     }
     @RabbitListener(queues = "${spring.rabbitmq.queue_emergency}")
@@ -58,7 +59,8 @@ public class EmergencyNotificationService {
             for (UserCoach coach : relatedCoaches) {
                 if (verifyCoachSessionInCache(coach.getCoachProfile())) {
                     logger.info("Coach "+coach.getCoachProfile().getFirstname()+" "+coach.getCoachProfile().getLastname()+" is authenticated.");
-                    sendToNotifChannelQueue(coach);
+                    UserCoachHeartRate userCoachHeartRate = new UserCoachHeartRate(coach, userHeartRate.getHeartRate());
+                    sendToNotifChannelQueue(userCoachHeartRate);
                 }
             }
         }

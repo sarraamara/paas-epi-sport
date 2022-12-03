@@ -3,6 +3,8 @@ package com.namelesscloudco.coachnotify
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 
 import android.widget.Button
@@ -27,19 +29,23 @@ class MainActivity : AppCompatActivity() {
         button2.isEnabled = false
         editText = findViewById(R.id.editText)
         val intent = Intent(this, NotificationService::class.java)
-        val name = editText.text
+
 
         button.setOnClickListener {
             try {
                     button?.isEnabled = false
                     button2?.isEnabled = true
                     val idCoach = editText.text.toString()
-                    notifyPresence(name)
+                    notifyPresence(idCoach)
                     intent.putExtra("idCoach", idCoach)
                     startForegroundService(intent)
-                    System.out.println("heey")
-                    Toast.makeText(this, "Success!", Toast.LENGTH_LONG).show()
-
+                    Toast.makeText(this, "Votre session sera renouvelée toutes les 10 minutes.", Toast.LENGTH_LONG).show()
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        if(!button?.isEnabled!!){
+                            notifyPresence(idCoach)
+                            Toast.makeText(this, "Renouvellement de votre sesssion.", Toast.LENGTH_LONG).show()
+                        }
+                    }, 600000)
 
             } catch (e:java.lang.Exception) {
                 Toast.makeText(this, "Error!", Toast.LENGTH_LONG).show()
@@ -49,10 +55,10 @@ class MainActivity : AppCompatActivity() {
         button2.setOnClickListener {
             button?.isEnabled = true
             button2?.isEnabled = false
-            val idCoach = editText.text.toString();
             try {
+                val idCoach = editText.text.toString()
                 stopService(intent)
-                notifyAbsence(name)
+                notifyAbsence(idCoach)
                 Toast.makeText(this, "Success!", Toast.LENGTH_LONG).show()
             } catch (e:java.lang.Exception) {
                 Toast.makeText(this, "Error!", Toast.LENGTH_LONG).show()

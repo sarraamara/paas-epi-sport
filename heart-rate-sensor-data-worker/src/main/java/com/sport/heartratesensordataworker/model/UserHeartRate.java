@@ -15,5 +15,5 @@ public class UserHeartRate {
     private String id;
 
     private String userId;
-    private float heartRate;
+    private int heartRate;
 }
