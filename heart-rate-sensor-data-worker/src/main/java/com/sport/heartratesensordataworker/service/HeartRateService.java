@@ -1,6 +1,9 @@
 package com.sport.heartratesensordataworker.service;
 
+import com.sport.heartratesensordataworker.model.Emergency;
+import com.sport.heartratesensordataworker.model.User;
 import com.sport.heartratesensordataworker.model.UserHeartRate;
+import com.sport.heartratesensordataworker.repository.EmergencyRepository;
 import com.sport.heartratesensordataworker.repository.HeartRateRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,8 +11,12 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+
+import java.sql.Timestamp;
 
 @Service
 public class HeartRateService {
@@ -17,6 +24,8 @@ public class HeartRateService {
     private final HeartRateRepository heartRateRepository;
 
     private RabbitTemplate rabbitTemplate;
+
+    private final EmergencyRepository emergencyRepository;
 
     @Value("${spring.rabbitmq.exchange}")
     private String exchange;
@@ -27,47 +36,16 @@ public class HeartRateService {
     private static final Logger logger = LoggerFactory.getLogger(HeartRateService.class);
 
     @Autowired
-    public HeartRateService(HeartRateRepository heartRateRepository, RabbitTemplate rabbitTemplate) {
+    public HeartRateService(HeartRateRepository heartRateRepository, RabbitTemplate rabbitTemplate, EmergencyRepository emergencyRepository) {
         this.heartRateRepository = heartRateRepository;
         this.rabbitTemplate = rabbitTemplate;
+        this.emergencyRepository = emergencyRepository;
     }
 
-    private boolean checkUserSubscription(String userId) {
-        final String uri = "http://localhost:8080/users/get-user/" + userId;
-
-        RestTemplate restTemplate = new RestTemplate();
-        String result = restTemplate.getForObject(uri, String.class);
-        System.out.println(result);
-        logger.info("Checking user " + userId + " subscription");
-        assert result != null;
-        return !result.isEmpty();
-    }
-
-    /** TO DO **/
-    private boolean checkEmergency(UserHeartRate userHeartRate){
+    private int checkEmergency(UserHeartRate userHeartRate, int age){
         logger.info("Checking emergency:" + userHeartRate);
-        int age = 23;
-        final String uri = "http://localhost:8080/users/get-user/" + userHeartRate.getUserId();
-        RestTemplate restTemplate = new RestTemplate();
-        String result = restTemplate.getForObject(uri, String.class);
         int maxHR = (int) (211 - 0.64*age);
-        if(userHeartRate.getHeartRate() > maxHR){
-            return true;
-        }
-        else {
-            return false;
-        }
-
-    }
-
-    private boolean checkEmergency2(UserHeartRate userHeartRate){
-        logger.info("Checking emergency:" + userHeartRate);
-        if(userHeartRate.getHeartRate() > 200){
-            return true;
-        }
-        else {
-            return false;
-        }
+        return maxHR-userHeartRate.getHeartRate();
 
     }
 
@@ -76,10 +54,15 @@ public class HeartRateService {
         rabbitTemplate.convertAndSend(exchange,routingkey, userHeartRate);
     }
 
-    /** TO DO**/
-    private void saveEmergency(UserHeartRate userHeartRate) {
+    private void saveEmergency(UserHeartRate userHeartRate, int checkEmergency) {
         logger.info("Saving userHeartRate Emergency Data:" + userHeartRate);
-
+        Emergency emergency = new Emergency(
+                userHeartRate.getId(),
+                userHeartRate.getUserId(),
+                userHeartRate.getHeartRate(),
+                checkEmergency+userHeartRate.getHeartRate(),
+                new Timestamp(System.currentTimeMillis()));
+        emergencyRepository.save(emergency);
     }
 
     private void saveHeartRateData(UserHeartRate userHeartRate){
@@ -89,20 +72,30 @@ public class HeartRateService {
 
     @RabbitListener(queues = "${spring.rabbitmq.queue_hr}")
     public void receivedMessage(UserHeartRate userHeartRate) {
+        User current_user = getUser(Integer.parseInt(userHeartRate.getUserId()));
+        if (current_user == null)
+            logger.info("The user isn't registered");
+        else {
+            logger.info("Getting userHeartRate:" + userHeartRate);
 
-        logger.info("Getting userHeartRate:" + userHeartRate);
+            int checkEmergency = checkEmergency(userHeartRate, current_user.getAge());
+            if (checkEmergency <= 0) {
+                sendEmergency(userHeartRate);
+                saveEmergency(userHeartRate, checkEmergency);
+            }
 
-       /* if(!checkUserSubscription(userHeartRate.getUserId())){
-            logger.info("User " + userHeartRate.getUserId()+" not subscribed.");
-            return;
-        }*/
-
-        if(checkEmergency2(userHeartRate)){
-            sendEmergency(userHeartRate);
-           // saveEmergency(userHeartRate);
+            saveHeartRateData(userHeartRate);
         }
+    }
 
-        saveHeartRateData(userHeartRate);
+
+    private User getUser(int userId) {
+        final String uri = "http://172.31.253.235:8088/users/get-user/" + userId;
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<User> result = restTemplate.getForEntity(uri, User.class);
+
+        return result.getBody();
     }
 
 }
