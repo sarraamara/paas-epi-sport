@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var editText:EditText
     lateinit var button: Button
     lateinit var button2: Button
+    private val RENEW_SESSION_TIME: Long = 600000; //10 minutes
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +46,7 @@ class MainActivity : AppCompatActivity() {
                             notifyPresence(idCoach)
                             Toast.makeText(this, "Renouvellement de votre sesssion.", Toast.LENGTH_LONG).show()
                         }
-                    }, 600000)
+                    }, RENEW_SESSION_TIME)
 
             } catch (e:java.lang.Exception) {
                 Toast.makeText(this, "Error!", Toast.LENGTH_LONG).show()

@@ -21,7 +21,7 @@ public class NotifyCoachController {
     @Autowired
     NotifyCoachRepository notifyCoachRepository;
 
-    Map<Integer, UserCoachHeartRate> usersNotification = new HashMap<>();
+    Map<Integer, ArrayList<UserCoachHeartRate>> usersNotification = new HashMap<>();
     private static final Logger LOGGER = Logger.getLogger(NotifyCoachController.class.getName());
     @PostMapping("/save-session/{coachId}")
     @ResponseStatus(HttpStatus.CREATED)
@@ -55,12 +55,16 @@ public class NotifyCoachController {
 
     @GetMapping("/get-notif/{coachId}")
     public UserCoachHeartRate getNotification(@PathVariable int coachId) {
-        UserCoachHeartRate userCoach =  null;
 
+        ArrayList<UserCoachHeartRate> userNotif =  null;
+        UserCoachHeartRate notifContent = null;
         if(usersNotification.containsKey(coachId)){
-            userCoach = usersNotification.get(coachId);
-            usersNotification.remove(coachId);
-            return userCoach;
+            userNotif = usersNotification.get(coachId);
+            if(!userNotif.isEmpty()){
+                notifContent = userNotif.get(0);
+                userNotif.remove(0);
+                return notifContent;
+            }
         }
 
         return null;
@@ -68,7 +72,19 @@ public class NotifyCoachController {
     @RabbitListener(queues = "${spring.rabbitmq.queue_notif}")
     public void receivedMessage(UserCoachHeartRate notifContent) {
         LOGGER.info(notifContent.toString());
-        usersNotification.put(notifContent.getUserCoach().getCoachProfile().getCoachId(), notifContent);//overwrite existent notification if it exists
+
+        int coachId = notifContent.getUserCoach().getCoachProfile().getCoachId();
+
+        if(usersNotification.containsKey(coachId)){
+           ArrayList<UserCoachHeartRate> userNotif = usersNotification.get(coachId);
+           userNotif.add(notifContent);
+           usersNotification.put(coachId, userNotif);
+        }
+        else {
+            ArrayList<UserCoachHeartRate> userNotif = new ArrayList<>();
+            userNotif.add(notifContent);
+            usersNotification.put(coachId, userNotif);
+        }
     }
 
 }
