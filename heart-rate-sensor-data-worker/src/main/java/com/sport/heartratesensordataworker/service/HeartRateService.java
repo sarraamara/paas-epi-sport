@@ -19,8 +19,6 @@ import org.springframework.web.client.RestTemplate;
 import java.sql.Timestamp;
 
 @Service
-@RequestMapping("/emergency")
-@RestController
 public class HeartRateService {
 
     private final HeartRateRepository heartRateRepository;
@@ -44,14 +42,6 @@ public class HeartRateService {
         this.emergencyRepository = emergencyRepository;
     }
 
-//    private boolean checkUserSubscription(String userId) {
-//
-//        logger.info("Checking user " + userId + " subscription");
-//        assert result != null;
-//        return !result.isEmpty();
-//    }
-
-    /** TO DO **/
     private int checkEmergency(UserHeartRate userHeartRate, int age){
         logger.info("Checking emergency:" + userHeartRate);
         int maxHR = (int) (211 - 0.64*age);
@@ -81,9 +71,10 @@ public class HeartRateService {
     }
 
     @RabbitListener(queues = "${spring.rabbitmq.queue_hr}")
-    @GetMapping("/{userId}")
     public void receivedMessage(UserHeartRate userHeartRate) {
         User current_user = getUser(Integer.parseInt(userHeartRate.getUserId()));
+        if (current_user == null)
+            logger.info("The user isn't registered");
         logger.info("Getting userHeartRate:" + userHeartRate);
 
         int checkEmergency = checkEmergency(userHeartRate,current_user.getAge());
