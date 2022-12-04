@@ -33,7 +33,7 @@ public class HeartRateService {
     }
 
     private boolean checkUserSubscription(String userId) {
-        final String uri = "http://localhost:8080/users/get-user/" + userId;
+        final String uri = "http://172.31.252.20:8084/users/get-user/" + userId;
 
         RestTemplate restTemplate = new RestTemplate();
         String result = restTemplate.getForObject(uri, String.class);
@@ -47,7 +47,7 @@ public class HeartRateService {
     private boolean checkEmergency(UserHeartRate userHeartRate){
         logger.info("Checking emergency:" + userHeartRate);
         int age = 23;
-        final String uri = "http://localhost:8080/users/get-user/" + userHeartRate.getUserId();
+        final String uri = "http://172.31.252.20:8084/users/get-user/" + userHeartRate.getUserId();
         RestTemplate restTemplate = new RestTemplate();
         String result = restTemplate.getForObject(uri, String.class);
         int maxHR = (int) (211 - 0.64*age);
