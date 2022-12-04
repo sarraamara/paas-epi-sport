@@ -75,15 +75,17 @@ public class HeartRateService {
         User current_user = getUser(Integer.parseInt(userHeartRate.getUserId()));
         if (current_user == null)
             logger.info("The user isn't registered");
-        logger.info("Getting userHeartRate:" + userHeartRate);
+        else {
+            logger.info("Getting userHeartRate:" + userHeartRate);
 
-        int checkEmergency = checkEmergency(userHeartRate,current_user.getAge());
-        if(checkEmergency<=0) {
-            sendEmergency(userHeartRate);
-            saveEmergency(userHeartRate,checkEmergency);
+            int checkEmergency = checkEmergency(userHeartRate, current_user.getAge());
+            if (checkEmergency <= 0) {
+                sendEmergency(userHeartRate);
+                saveEmergency(userHeartRate, checkEmergency);
+            }
+
+            saveHeartRateData(userHeartRate);
         }
-
-        saveHeartRateData(userHeartRate);
     }
 
     private User getUser(int userId) {
