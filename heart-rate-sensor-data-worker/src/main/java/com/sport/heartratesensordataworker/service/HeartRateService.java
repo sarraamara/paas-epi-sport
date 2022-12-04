@@ -39,13 +39,19 @@ public class HeartRateService {
         String result = restTemplate.getForObject(uri, String.class);
         System.out.println(result);
         logger.info("Checking user " + userId + " subscription");
+        assert result != null;
         return !result.isEmpty();
     }
 
     /** TO DO **/
     private boolean checkEmergency(UserHeartRate userHeartRate){
         logger.info("Checking emergency:" + userHeartRate);
-        if(userHeartRate.getHeartRate() > 220){
+        int age = 23;
+        final String uri = "http://localhost:8080/users/get-user/" + userHeartRate.getUserId();
+        RestTemplate restTemplate = new RestTemplate();
+        String result = restTemplate.getForObject(uri, String.class);
+        int maxHR = (int) (211 - 0.64*age);
+        if(userHeartRate.getHeartRate() > maxHR){
             return true;
         }
         else {
