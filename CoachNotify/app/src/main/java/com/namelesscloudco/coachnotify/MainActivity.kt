@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var editText:EditText
     lateinit var button: Button
     lateinit var button2: Button
+    private val RENEW_SESSION_TIME: Long = 600000; //10 minutes
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,13 +40,13 @@ class MainActivity : AppCompatActivity() {
                     notifyPresence(idCoach)
                     intent.putExtra("idCoach", idCoach)
                     startForegroundService(intent)
-                    Toast.makeText(this, "Votre session sera renouvelée toutes les 10 minutes.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Votre session sera renouvelée toutes les "+RENEW_SESSION_TIME+" minutes.", Toast.LENGTH_LONG).show()
                     Handler(Looper.getMainLooper()).postDelayed({
                         if(!button?.isEnabled!!){
                             notifyPresence(idCoach)
                             Toast.makeText(this, "Renouvellement de votre sesssion.", Toast.LENGTH_LONG).show()
                         }
-                    }, 600000)
+                    }, RENEW_SESSION_TIME)
 
             } catch (e:java.lang.Exception) {
                 Toast.makeText(this, "Error!", Toast.LENGTH_LONG).show()

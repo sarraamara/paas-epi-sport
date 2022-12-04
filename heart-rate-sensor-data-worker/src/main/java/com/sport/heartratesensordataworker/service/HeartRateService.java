@@ -75,14 +75,14 @@ public class HeartRateService {
 
         logger.info("Getting userHeartRate:" + userHeartRate);
 
-        if(!checkUserSubscription(userHeartRate.getUserId())){
+       /* if(!checkUserSubscription(userHeartRate.getUserId())){
             logger.info("User " + userHeartRate.getUserId()+" not subscribed.");
             return;
-        }
+        }*/
 
         if(checkEmergency(userHeartRate)){
             sendEmergency(userHeartRate);
-            saveEmergency(userHeartRate);
+           // saveEmergency(userHeartRate);
         }
 
         saveHeartRateData(userHeartRate);
