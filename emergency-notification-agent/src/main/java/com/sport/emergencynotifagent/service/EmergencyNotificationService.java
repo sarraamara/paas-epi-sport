@@ -62,6 +62,9 @@ public class EmergencyNotificationService {
                     UserCoachHeartRate userCoachHeartRate = new UserCoachHeartRate(coach, userHeartRate.getHeartRate());
                     sendToNotifChannelQueue(userCoachHeartRate);
                 }
+                else{
+                    logger.info("No authenticated coach in cache session.");
+                }
             }
         }
     }

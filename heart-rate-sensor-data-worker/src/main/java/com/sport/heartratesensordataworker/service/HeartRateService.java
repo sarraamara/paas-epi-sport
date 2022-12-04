@@ -60,6 +60,17 @@ public class HeartRateService {
 
     }
 
+    private boolean checkEmergency2(UserHeartRate userHeartRate){
+        logger.info("Checking emergency:" + userHeartRate);
+        if(userHeartRate.getHeartRate() > 200){
+            return true;
+        }
+        else {
+            return false;
+        }
+
+    }
+
     private void sendEmergency(UserHeartRate userHeartRate) {
         logger.info("WARNING: Sending emergency " + userHeartRate);
         rabbitTemplate.convertAndSend(exchange,routingkey, userHeartRate);
@@ -86,7 +97,7 @@ public class HeartRateService {
             return;
         }*/
 
-        if(checkEmergency(userHeartRate)){
+        if(checkEmergency2(userHeartRate)){
             sendEmergency(userHeartRate);
            // saveEmergency(userHeartRate);
         }
