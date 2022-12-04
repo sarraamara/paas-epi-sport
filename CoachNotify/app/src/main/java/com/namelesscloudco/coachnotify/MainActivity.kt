@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
                     notifyPresence(idCoach)
                     intent.putExtra("idCoach", idCoach)
                     startForegroundService(intent)
-                    Toast.makeText(this, "Votre session sera renouvelée toutes les "+RENEW_SESSION_TIME+" minutes.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Votre session sera renouvelée toutes les 10 minutes.", Toast.LENGTH_LONG).show()
                     Handler(Looper.getMainLooper()).postDelayed({
                         if(!button?.isEnabled!!){
                             notifyPresence(idCoach)
