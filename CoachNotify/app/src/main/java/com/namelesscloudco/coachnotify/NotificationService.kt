@@ -107,7 +107,7 @@ class NotificationService : Service() {
 
    private fun sendNotification(notifContent: UserCoachHeartRate) {
       System.out.println("Sending notification..")
-      notificationManager?.cancelAll()
+      //notificationManager?.cancel(notifContent.userCoach.userProfile.userId);
       val mBuilder = NotificationCompat.Builder(applicationContext, default_notification_channel_id)
       mBuilder.setContentTitle("Urgence")
       mBuilder.setContentText("Le rythme cardiaque de "+notifContent.userCoach.userProfile.lastname+
@@ -116,7 +116,7 @@ class NotificationService : Service() {
       mBuilder.setAutoCancel(true)
       mBuilder.setSmallIcon(R.drawable.ic_dialog_info)
 
-      mBuilder.setChannelId(ID_COACH)
+      mBuilder.setChannelId(notifContent.userCoach.userProfile.userId.toString())
 
       notificationManager!!.notify(System.currentTimeMillis().toInt(), mBuilder.build())
    }

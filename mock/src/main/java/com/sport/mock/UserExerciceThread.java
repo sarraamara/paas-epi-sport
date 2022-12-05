@@ -20,7 +20,7 @@ public class UserExerciceThread extends Thread{
 
     private final int AVG_HEART_RATE = 72;
 
-    private final String IP = "172.31.250.71";
+    private final String IP = "172.31.250.18";
 
     private static final Logger logger = Logger.getLogger(MockApplication.class.getName());
 
@@ -79,10 +79,10 @@ public class UserExerciceThread extends Thread{
 
             userHeartRate.setHeartRate(heartRate);
             ResponseEntity response = restemp.exchange(
-                URL_SENSOR_HEART_RATE,
-                HttpMethod.POST,
-                new HttpEntity<>(userHeartRate),
-                String.class
+                    URL_SENSOR_HEART_RATE,
+                    HttpMethod.POST,
+                    new HttpEntity<>(userHeartRate),
+                    String.class
             );
             if(response.getStatusCodeValue() == 200){
                 logger.info(userProfile.getLastname() + "'s heart rate is " + heartRate+"bpm.");

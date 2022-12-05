@@ -74,8 +74,8 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public AmqpAdmin amqpAdmin(ConnectionFactory connectionFactory) {
-        return new RabbitAdmin(connectionFactory);
+    public AmqpAdmin amqpAdmin() {
+        return new RabbitAdmin(connectionFactory());
     }
 
 }
