@@ -19,7 +19,7 @@ public class RabbitMQConfig {
     private String exchange;
 
     @Value("${spring.rabbitmq.routingkey_emergency}")
-    private static String routingKey;
+    private String routingKey;
 
     @Value("${spring.rabbitmq.username}")
     private String username;
