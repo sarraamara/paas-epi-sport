@@ -2,6 +2,8 @@ package com.sport.notificationchannelmanager;
 
 import com.sport.notificationchannelmanager.model.UserCoachHeartRate;
 
+import org.springframework.amqp.core.AmqpAdmin;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,7 +28,9 @@ public class NotifyCoachController {
     @Autowired
     NotifyCoachRepository notifyCoachRepository;
 
-    Map<Integer, ArrayList<UserCoachHeartRate>> usersNotification = new HashMap<>();
+    @Autowired
+    private AmqpAdmin admin;
+
     private static final Logger LOGGER = Logger.getLogger(NotifyCoachController.class.getName());
     @PostMapping("/save-session/{coachId}")
     @ResponseStatus(HttpStatus.CREATED)
@@ -39,6 +43,7 @@ public class NotifyCoachController {
     public void delSession(@PathVariable String coachId) {
         LOGGER.info("DELETE SESSION, COACHID="+coachId);
         template.opsForValue().getAndDelete(STRING_KEY_PREFIX + coachId);
+        admin.purgeQueue("coachId" + coachId);
     }
     @GetMapping("/get-session/{coachId}")
     public Optional<Coach> getCoachSession(@PathVariable String coachId) {
