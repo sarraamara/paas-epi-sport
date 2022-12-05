@@ -1,27 +1,27 @@
 package com.sport.notificationchannelmanager.config;
 
 
+import com.sport.notificationchannelmanager.model.UserCoachHeartRate;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.DefaultClassMapper;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Configuration
 public class RabbitMQConfig {
-
-    @Value("${spring.rabbitmq.queue_notif}")
-    private String queue;
 
     @Value("${spring.rabbitmq.exchange}")
     private String exchange;
 
-    @Value("${spring.rabbitmq.routingkey_notif}")
-    private String routingKey;
 
     @Value("${spring.rabbitmq.username}")
     private String username;
@@ -32,10 +32,6 @@ public class RabbitMQConfig {
     @Value("${spring.rabbitmq.host}")
     private String host;
 
-    @Bean
-    Queue queue() {
-        return new Queue(queue, true);
-    }
 
     @Bean
     Exchange myExchange() {
@@ -43,13 +39,22 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    Binding binding() {
-        return BindingBuilder
-                .bind(queue())
-                .to(myExchange())
-                .with(routingKey)
-                .noargs();
+    public MessageConverter messageConverter() {
+        Jackson2JsonMessageConverter jsonMessageConverter = new Jackson2JsonMessageConverter();
+        jsonMessageConverter.setClassMapper(classMapper());
+
+        return jsonMessageConverter;
     }
+    @Bean
+    public DefaultClassMapper classMapper() {
+        DefaultClassMapper classMapper = new DefaultClassMapper();
+        Map<String, Class<?>> idClassMapping = new HashMap<>();
+        idClassMapping.put("com.sport.emergencynotifagent.model.UserCoachHeartRate", UserCoachHeartRate.class);
+        classMapper.setTrustedPackages("com.sport.emergencynotifagent.model.UserCoachHeartRate");
+        classMapper.setIdClassMapping(idClassMapping);
+        return classMapper;
+    }
+
 
     @Bean
     public ConnectionFactory connectionFactory() {
@@ -59,15 +64,12 @@ public class RabbitMQConfig {
         return cachingConnectionFactory;
     }
 
-    @Bean
-    public MessageConverter jsonMessageConverter() {
-        return new Jackson2JsonMessageConverter();
-    }
 
     @Bean
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
         final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-        rabbitTemplate.setMessageConverter(jsonMessageConverter());
+        rabbitTemplate.setMessageConverter(messageConverter());
         return rabbitTemplate;
     }
+
 }

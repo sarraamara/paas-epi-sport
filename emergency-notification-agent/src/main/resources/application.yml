@@ -1,6 +1,6 @@
 spring:
   rabbitmq:
-    host: 172.31.253.235
+    host: 172.31.250.71
     password: test
     port: 15672
     username: test
@@ -9,5 +9,5 @@ spring:
     routingkey_emergency: emergency.routingkey
     routingkey_notif: notif.routingkey
   redis:
-    hostname: 172.31.253.235
+    hostname: 172.31.250.71
     port: 6379

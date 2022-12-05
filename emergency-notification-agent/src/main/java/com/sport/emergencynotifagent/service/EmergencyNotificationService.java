@@ -1,5 +1,6 @@
 package com.sport.emergencynotifagent.service;
 
+import com.sport.emergencynotifagent.config.RabbitMQConfig;
 import com.sport.emergencynotifagent.model.CoachProfile;
 import com.sport.emergencynotifagent.model.UserCoach;
 import com.sport.emergencynotifagent.model.UserCoachHeartRate;
@@ -30,7 +31,7 @@ public class EmergencyNotificationService {
     @Value("${spring.rabbitmq.exchange}")
     private String exchange;
 
-    @Value("${spring.rabbitmq.routingkey_notif}")
+
     private String routingkey;
 
     private static final Logger logger = LoggerFactory.getLogger(EmergencyNotificationService.class);
@@ -46,6 +47,7 @@ public class EmergencyNotificationService {
 
     private void sendToNotifChannelQueue(UserCoachHeartRate notifContent) {
         logger.info("Sending to notif channel queue :" +notifContent.toString());
+        routingkey = "coachId"+notifContent.getUserCoach().getCoachProfile().getCoachId();
         rabbitTemplate.convertAndSend(exchange,routingkey,notifContent);
 
     }

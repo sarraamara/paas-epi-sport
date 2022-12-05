@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="mock" />
+        <module name="users-api" />
+        <module name="heart-rate-sensor-data-collector" />
+        <module name="emergency-notification-agent" />
+        <module name="notification-channel-manager" />
+        <module name="heart-rate-sensor-data-worker" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="emergency-notification-agent" options="-parameters" />
+      <module name="heart-rate-sensor-data-collector" options="-parameters" />
+      <module name="heart-rate-sensor-data-worker" options="-parameters" />
+      <module name="mock" options="-parameters" />
+      <module name="notification-channel-manager" options="-parameters" />
+      <module name="users-api" options="-parameters" />
+    </option>
+  </component>
+</project>

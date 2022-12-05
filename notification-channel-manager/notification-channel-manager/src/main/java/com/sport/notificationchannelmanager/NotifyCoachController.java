@@ -1,22 +1,34 @@
 package com.sport.notificationchannelmanager;
 
-import com.sport.notificationchannelmanager.model.UserCoach;
 import com.sport.notificationchannelmanager.model.UserCoachHeartRate;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
+
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.amqp.core.*;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+
 
 @RestController
 @RequestMapping("/notification")
 public class NotifyCoachController {
     @Autowired
     private RedisTemplate<String, String> template;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @Value("${spring.rabbitmq.exchange}")
+    private String exchange;
+    @Autowired
+    private AmqpAdmin admin;
     private static final String STRING_KEY_PREFIX = "coach:";
     @Autowired
     NotifyCoachRepository notifyCoachRepository;
@@ -55,36 +67,11 @@ public class NotifyCoachController {
 
     @GetMapping("/get-notif/{coachId}")
     public UserCoachHeartRate getNotification(@PathVariable int coachId) {
+        String queue_name = "coachId" + coachId;
 
-        ArrayList<UserCoachHeartRate> userNotif =  null;
-        UserCoachHeartRate notifContent = null;
-        if(usersNotification.containsKey(coachId)){
-            userNotif = usersNotification.get(coachId);
-            if(!userNotif.isEmpty()){
-                notifContent = userNotif.get(0);
-                userNotif.remove(0);
-                return notifContent;
-            }
-        }
+        Object userCoachHeartRate = rabbitTemplate.receiveAndConvert(queue_name);
 
-        return null;
-    }
-    @RabbitListener(queues = "${spring.rabbitmq.queue_notif}")
-    public void receivedMessage(UserCoachHeartRate notifContent) {
-        LOGGER.info(notifContent.toString());
-
-        int coachId = notifContent.getUserCoach().getCoachProfile().getCoachId();
-
-        if(usersNotification.containsKey(coachId)){
-           ArrayList<UserCoachHeartRate> userNotif = usersNotification.get(coachId);
-           userNotif.add(notifContent);
-           usersNotification.put(coachId, userNotif);
-        }
-        else {
-            ArrayList<UserCoachHeartRate> userNotif = new ArrayList<>();
-            userNotif.add(notifContent);
-            usersNotification.put(coachId, userNotif);
-        }
+        return (UserCoachHeartRate) userCoachHeartRate;
     }
 
 }
