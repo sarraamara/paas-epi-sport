@@ -44,6 +44,9 @@ public class NotifyCoachController {
         LOGGER.info("DELETE SESSION, COACHID="+coachId);
         template.opsForValue().getAndDelete(STRING_KEY_PREFIX + coachId);
         admin.purgeQueue("coachId" + coachId,true);
+        LOGGER.info(" "+admin.getQueueInfo("coachId" + coachId).getMessageCount());
+        LOGGER.info(" "+admin.getLastDeclarationExceptionEvent());
+
     }
     @GetMapping("/get-session/{coachId}")
     public Optional<Coach> getCoachSession(@PathVariable String coachId) {
