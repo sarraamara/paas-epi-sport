@@ -19,7 +19,7 @@ class NotificationService : Service() {
    var timer: Timer? = null
    var timerTask: TimerTask? = null
    var TAG = "Timers"
-   var Your_X_SECS: Long = 10
+   var Your_X_SECS: Long = 1
    var ID_COACH = ""
    private var notificationManager: NotificationManager? = null
    val default_notification_channel_id = "default"
