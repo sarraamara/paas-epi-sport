@@ -43,7 +43,7 @@ public class NotifyCoachController {
     public void delSession(@PathVariable String coachId) {
         LOGGER.info("DELETE SESSION, COACHID="+coachId);
         template.opsForValue().getAndDelete(STRING_KEY_PREFIX + coachId);
-        admin.purgeQueue("coachId" + coachId,false);
+        admin.purgeQueue("coachId" + coachId,true);
     }
     @GetMapping("/get-session/{coachId}")
     public Optional<Coach> getCoachSession(@PathVariable String coachId) {
