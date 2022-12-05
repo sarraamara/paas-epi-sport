@@ -29,7 +29,7 @@ public class NotifyCoachController {
     NotifyCoachRepository notifyCoachRepository;
 
     @Autowired
-    private AmqpAdmin admin;
+    private RabbitAdmin admin;
 
     private static final Logger LOGGER = Logger.getLogger(NotifyCoachController.class.getName());
     @PostMapping("/save-session/{coachId}")
