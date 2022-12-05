@@ -2,7 +2,7 @@ app:
   message: heart rate data succesfully sent
 spring:
   rabbitmq:
-    host: 172.31.250.71
+    host: 192.168.1.2
     password: test
     port: 15672
     username: test

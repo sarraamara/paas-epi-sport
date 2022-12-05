@@ -20,7 +20,7 @@ public class UserExerciceThread extends Thread{
 
     private final int AVG_HEART_RATE = 72;
 
-    private final String IP = "localhost";
+    private final String IP = "172.31.250.71";
 
     private static final Logger logger = Logger.getLogger(MockApplication.class.getName());
 

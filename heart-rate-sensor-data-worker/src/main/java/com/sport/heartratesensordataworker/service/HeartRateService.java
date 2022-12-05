@@ -33,8 +33,6 @@ public class HeartRateService {
     @Value("${spring.rabbitmq.routingkey_emergency}")
     private String routingkey;
 
-    @Value("${spring.rabbitmq.host}")
-    private String ip;
 
     private static final Logger logger = LoggerFactory.getLogger(HeartRateService.class);
 
@@ -93,7 +91,7 @@ public class HeartRateService {
 
 
     private User getUser(int userId) {
-        final String uri = "http://localhost:8088/users/get-user/" + userId;
+        final String uri = "http://192.168.1.11:8088/users/get-user/" + userId;
 
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<User> result = restTemplate.getForEntity(uri, User.class);

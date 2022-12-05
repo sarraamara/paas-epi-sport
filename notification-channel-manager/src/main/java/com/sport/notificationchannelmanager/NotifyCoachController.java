@@ -4,12 +4,10 @@ import com.sport.notificationchannelmanager.model.UserCoachHeartRate;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
+
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.amqp.core.*;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -24,11 +22,6 @@ public class NotifyCoachController {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
-
-    @Value("${spring.rabbitmq.exchange}")
-    private String exchange;
-    @Autowired
-    private AmqpAdmin admin;
     private static final String STRING_KEY_PREFIX = "coach:";
     @Autowired
     NotifyCoachRepository notifyCoachRepository;
@@ -68,7 +61,6 @@ public class NotifyCoachController {
     @GetMapping("/get-notif/{coachId}")
     public UserCoachHeartRate getNotification(@PathVariable int coachId) {
         String queue_name = "coachId" + coachId;
-
         Object userCoachHeartRate = rabbitTemplate.receiveAndConvert(queue_name);
 
         return (UserCoachHeartRate) userCoachHeartRate;
