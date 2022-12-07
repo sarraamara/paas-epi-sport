@@ -109,7 +109,7 @@ class NotificationService : Service() {
    private fun sendNotification(notifContent: UserCoachHeartRate) {
       System.out.println("Sending notification..")
       //notificationManager?.cancel(notifContent.userCoach.userProfile.userId);
-      val mBuilder = NotificationCompat.Builder(applicationContext, default_notification_channel_id)
+      val mBuilder = NotificationCompat.Builder(applicationContext, ID_COACH)
       mBuilder.setContentTitle("Urgence")
       mBuilder.setContentText("Le rythme cardiaque de "+notifContent.userCoach.userProfile.lastname+
               " "+notifContent.userCoach.userProfile.firstname+" est de "+notifContent.heartRate+ ".")
