@@ -2,6 +2,7 @@ package com.namelesscloudco.coachnotify
 
 import android.R
 import android.app.*
+import android.app.PendingIntent.FLAG_MUTABLE
 import android.content.Intent
 import android.graphics.Color
 import android.os.Handler
@@ -43,7 +44,7 @@ class NotificationService : Service() {
       val notificationIntent = Intent(this, MainActivity::class.java)
       val pendingIntent = PendingIntent.getActivity(
          this,
-         0, notificationIntent, 0
+         0, notificationIntent, FLAG_MUTABLE
       )
       val notification: Notification = NotificationCompat.Builder(this, "1")
          .setContentTitle("Urgence")
