@@ -46,13 +46,13 @@ class NotificationService : Service() {
          this,
          0, notificationIntent, FLAG_MUTABLE
       )
-      val notification: Notification = NotificationCompat.Builder(this, "1")
+      val notification: Notification = NotificationCompat.Builder(this, ID_COACH)
          .setContentTitle("Urgence")
          .setContentText("Vous receverez les alertes des athlétes.")
          .setSmallIcon(R.drawable.ic_dialog_info)
          .setContentIntent(pendingIntent)
          .build()
-      startForeground(1, notification)
+      startForeground(Integer.parseInt(ID_COACH), notification)
 
       return START_STICKY
    }
