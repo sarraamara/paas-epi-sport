@@ -1,0 +1,2 @@
+# Mandatory variable : spring boot application name
+springboot_application_name: heart-rate-sensor-data-worker 

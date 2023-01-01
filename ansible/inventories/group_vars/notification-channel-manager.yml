@@ -1,0 +1,3 @@
+
+# Mandatory variable : spring boot application name
+springboot_application_name: notification-channel-manager 
