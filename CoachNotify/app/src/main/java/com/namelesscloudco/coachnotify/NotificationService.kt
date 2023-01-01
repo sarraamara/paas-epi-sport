@@ -48,7 +48,7 @@ class NotificationService : Service() {
       )
       val notification: Notification = NotificationCompat.Builder(this, ID_COACH)
          .setContentTitle("Urgence")
-         .setContentText("Vous receverez les alertes des athlétes.")
+         .setContentText("Vous receverez les alertes des athlètes.")
          .setSmallIcon(R.drawable.ic_dialog_info)
          .setContentIntent(pendingIntent)
          .build()
