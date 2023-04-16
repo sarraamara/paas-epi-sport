@@ -1,12 +1,17 @@
 app:
   message: heart rate data succesfully sent
 spring:
-  rabbitmq:
-    host: 192.168.1.2
-    password: test
-    port: 15672
-    username: test
-    exchange: epi.sport.exchange
-    routingkey_hr: userheartrate.routingkey
+  kafka:
+    bootstrap-servers: 172.31.252.78:9092
+    consumer:
+      group-id: my-group
+      auto-offset-reset: earliest
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.trusted.packages: "*"
 server:
   port: 8081
+
