@@ -54,11 +54,7 @@ docker run -d  --network="host" --name kafka -p 9092:9092
 On s'y connecte ensuite :
 docker exec -it 2720d7ce10ac /bin/sh
 
-On créé les topics :
+On créé les topics emergency, coach1, coach2, coach3, notif et hrdata:
  kafka-topics.sh --bootstrap-server localhost:9092 --topic emergency-topic --create --partitions 1 --replication-factor 1
-Created topic emergency-topic.
- kafka-topics.sh --bootstrap-server localhost:9092 --topic coach1-topic --create --partitions 1 --replication-factor 1
-Created topic coach1-topic.
-kafka-topics.sh --bootstrap-server localhost:9092 --topic coach2-topic --create --partitions 1 --replication-factor 1
-Created topic coach2-topic.
+
 
