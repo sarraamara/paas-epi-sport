@@ -26,23 +26,14 @@ public class HeartRateService {
 
     private final HeartRateRepository heartRateRepository;
 
-    private RabbitTemplate rabbitTemplate;
-
     private final EmergencyRepository emergencyRepository;
-
-    @Value("${spring.rabbitmq.exchange}")
-    private String exchange;
-
-    @Value("${spring.rabbitmq.routingkey_emergency}")
-    private String routingkey;
-
 
     private static final Logger logger = LoggerFactory.getLogger(HeartRateService.class);
 
     @Autowired
-    public HeartRateService(HeartRateRepository heartRateRepository, RabbitTemplate rabbitTemplate, EmergencyRepository emergencyRepository) {
+    public HeartRateService(HeartRateRepository heartRateRepository, KafkaTemplate<String, Object> kafkaTemplate, EmergencyRepository emergencyRepository) {
         this.heartRateRepository = heartRateRepository;
-        this.rabbitTemplate = rabbitTemplate;
+        this.kafkaTemplate = kafkaTemplate;
         this.emergencyRepository = emergencyRepository;
     }
 
@@ -54,10 +45,6 @@ public class HeartRateService {
         System.out.println(record.value());
     }
 
-
-    public void sendMessage(String topic, Object payload) {
-        kafkaTemplate.send(topic, payload);
-    }
     private int checkEmergency(UserHeartRate userHeartRate, int age){
         logger.info("Checking emergency:" + userHeartRate);
         int maxHR = (int) (211 - 0.64*age);
@@ -67,7 +54,7 @@ public class HeartRateService {
 
     private void sendEmergency(UserHeartRate userHeartRate) {
         logger.info("WARNING: Sending emergency " + userHeartRate);
-        rabbitTemplate.convertAndSend(exchange,routingkey, userHeartRate);
+        kafkaTemplate.send("emergency-topic", userHeartRate);
     }
 
     private void saveEmergency(UserHeartRate userHeartRate, int checkEmergency) {
@@ -86,7 +73,7 @@ public class HeartRateService {
         heartRateRepository.save(userHeartRate);
     }
 
-    @RabbitListener(queues = "${spring.rabbitmq.queue_hr}")
+    @KafkaListener(topics = "hrdata-topic", groupId = "ncc")
     public void receivedMessage(UserHeartRate userHeartRate) {
         User current_user = getUser(Integer.parseInt(userHeartRate.getUserId()));
         if (current_user == null)

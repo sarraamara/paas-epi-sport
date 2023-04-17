@@ -17,11 +17,4 @@ public class NotificationChannelManagerApplication {
 		SpringApplication.run(NotificationChannelManagerApplication.class, args);
 	}
 
-	@Bean
-	public RedisTemplate<?, ?> redisTemplate(RedisConnectionFactory connectionFactory) {
-		RedisTemplate<?, ?> template = new RedisTemplate<>();
-		template.setConnectionFactory(connectionFactory);
-		template.setDefaultSerializer(new StringRedisSerializer());
-		return template;
-	}
 }

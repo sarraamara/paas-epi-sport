@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/sensor/hr/")
 public class HeartRateController {
 
-    private HeartRateService heartRateService;
+    private final HeartRateService heartRateService;
     private static final Logger logger = LoggerFactory.getLogger(HeartRateController.class);
 
     @Autowired

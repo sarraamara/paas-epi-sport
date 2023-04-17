@@ -1,4 +1,4 @@
-package com.sport.notificationchannelmanager;
+package com.sport.notificationchannelmanager.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
