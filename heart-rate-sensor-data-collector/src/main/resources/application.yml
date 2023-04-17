@@ -1,10 +1,10 @@
 app:
-  message: heart rate data succesfully sent
+  message: heart rate data successfully sent
 spring:
   kafka:
-    bootstrap-servers: 172.31.252.78:9092
+    bootstrap-servers: 192.168.1.13:9092
     consumer:
-      group-id: my-group
+      group-id: ncc
       auto-offset-reset: earliest
       properties:
         spring.json.trusted.packages: "*"

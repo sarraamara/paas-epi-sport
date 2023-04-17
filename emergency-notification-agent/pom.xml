@@ -14,7 +14,7 @@
 	<name>emergency-notification-agent</name>
 	<description>emergency notification agent microservice</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 		<dependency>

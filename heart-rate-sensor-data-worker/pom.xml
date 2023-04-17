@@ -14,7 +14,7 @@
 	<name>heart-rate-sensor-data-worker</name>
 	<description>heart rate sensor data worker microservice</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 		<dependency>

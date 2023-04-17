@@ -21,8 +21,6 @@ import java.util.Map;
 @Configuration
 public class KafkaConfig {
 
-    @Autowired
-    private KafkaTemplate<String, Object> kafkaTemplate;
 
     @Bean
     public KafkaTemplate<String, Object> kafkaTemplate(ProducerFactory<String, Object> producerFactory) {
@@ -32,8 +30,8 @@ public class KafkaConfig {
     @Bean
     public DefaultKafkaConsumerFactory consumerFactory() {
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "my-group");
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "${spring.kafka.bootstrap_servers}:9092");
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "ncc");
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
 
@@ -46,16 +44,6 @@ public class KafkaConfig {
         ConcurrentKafkaListenerContainerFactory<String, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
         return factory;
-    }
-    @KafkaListener(topics = "hrdata-topic", groupId = "my-group")
-    public void listen(ConsumerRecord<String, Object> record) {
-        // Traitement du message reçu
-        System.out.println(record.value());
-    }
-
-
-    public void sendMessage(String topic, Object payload) {
-        kafkaTemplate.send(topic, payload);
     }
 
 }
