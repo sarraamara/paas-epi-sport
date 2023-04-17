@@ -2,6 +2,7 @@ package com.sport.notificationchannelmanager;
 
 import com.sport.notificationchannelmanager.model.UserCoachHeartRate;
 
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -32,6 +35,20 @@ public class NotifyCoachController {
     private RabbitAdmin admin;
 
     private static final Logger LOGGER = Logger.getLogger(NotifyCoachController.class.getName());
+
+    @Autowired
+    private KafkaTemplate<String, Object> kafkaTemplate;
+
+    @KafkaListener(topics = "notif-topic", groupId = "ncc")
+    public void listen(ConsumerRecord<String, Object> record) {
+        // Traitement du message reçu
+        System.out.println(record.value());
+    }
+
+    public void sendMessage(String topic, Object payload) {
+        kafkaTemplate.send(topic, payload);
+    }
+
     @PostMapping("/save-session/{coachId}")
     @ResponseStatus(HttpStatus.CREATED)
     public void saveSession(@PathVariable String coachId) {

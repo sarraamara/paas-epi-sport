@@ -1,12 +1,12 @@
 package com.sport.emergencynotifagent.service;
 
-import com.sport.emergencynotifagent.config.RabbitMQConfig;
 import com.sport.emergencynotifagent.model.CoachProfile;
 import com.sport.emergencynotifagent.model.UserCoach;
 import com.sport.emergencynotifagent.model.UserCoachHeartRate;
 import com.sport.emergencynotifagent.model.UserHeartRate;
 
 import com.sport.emergencynotifagent.repository.UserCoachRepository;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -14,6 +14,8 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,6 +37,24 @@ public class EmergencyNotificationService {
     private String routingkey;
 
     private static final Logger logger = LoggerFactory.getLogger(EmergencyNotificationService.class);
+
+    @Autowired
+    private KafkaTemplate<String, Object> kafkaTemplate;
+    @KafkaListener(topics = "emergency-topic", groupId = "ncc")
+    public void listenEmergencies(ConsumerRecord<String, Object> record) {
+        // Traitement du message reçu
+        System.out.println(record.value());
+    }
+
+    @KafkaListener(topics = "coach*-topic", groupId = "ncc")
+    public void listenCoach1(ConsumerRecord<String, Object> record) {
+        // Traitement du message reçu
+        System.out.println("topic " + record.topic() + " = " + record.value());
+    }
+
+    public void sendMessage(String topic, Object payload) {
+        kafkaTemplate.send(topic, payload);
+    }
 
     private List<UserCoach> lookForRelatedCoaches(String userId) {
         logger.info("Look for related coaches to user " + userId + " in database.");

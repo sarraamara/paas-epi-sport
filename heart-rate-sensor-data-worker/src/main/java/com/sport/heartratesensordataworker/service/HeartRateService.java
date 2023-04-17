@@ -5,6 +5,7 @@ import com.sport.heartratesensordataworker.model.User;
 import com.sport.heartratesensordataworker.model.UserHeartRate;
 import com.sport.heartratesensordataworker.repository.EmergencyRepository;
 import com.sport.heartratesensordataworker.repository.HeartRateRepository;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -12,6 +13,8 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -43,6 +46,18 @@ public class HeartRateService {
         this.emergencyRepository = emergencyRepository;
     }
 
+    @Autowired
+    private KafkaTemplate<String, Object> kafkaTemplate;
+    @KafkaListener(topics = "hrdata-topic", groupId = "ncc")
+    public void listen(ConsumerRecord<String, Object> record) {
+        // Traitement du message reçu
+        System.out.println(record.value());
+    }
+
+
+    public void sendMessage(String topic, Object payload) {
+        kafkaTemplate.send(topic, payload);
+    }
     private int checkEmergency(UserHeartRate userHeartRate, int age){
         logger.info("Checking emergency:" + userHeartRate);
         int maxHR = (int) (211 - 0.64*age);
