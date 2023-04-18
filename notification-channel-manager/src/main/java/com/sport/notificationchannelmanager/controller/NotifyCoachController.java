@@ -1,6 +1,6 @@
 package com.sport.notificationchannelmanager.controller;
 
-import com.sport.notificationchannelmanager.Service.KafkaCustomConsumer;
+import com.sport.notificationchannelmanager.service.KafkaCustomConsumer;
 import com.sport.notificationchannelmanager.repository.NotifyCoachRepository;
 import com.sport.notificationchannelmanager.model.Coach;
 import com.sport.notificationchannelmanager.model.UserCoachHeartRate;
@@ -69,6 +69,7 @@ public class NotifyCoachController {
     @GetMapping("/get-notif/{coachId}")
     public UserCoachHeartRate getNotification(@PathVariable int coachId) {
         String topic_name = "notif-topic";
+        System.out.println(kafkaConsumer.getLastMessage(topic_name).value());
         Object userCoachHeartRate = kafkaConsumer.getLastMessage(topic_name).value();
 
         return (UserCoachHeartRate) userCoachHeartRate;

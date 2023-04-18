@@ -1,5 +1,6 @@
 package com.sport.heartratesensordataworker.service;
 
+import com.google.gson.Gson;
 import com.sport.heartratesensordataworker.model.Emergency;
 import com.sport.heartratesensordataworker.model.User;
 import com.sport.heartratesensordataworker.model.UserHeartRate;
@@ -29,6 +30,8 @@ public class HeartRateService {
     private final EmergencyRepository emergencyRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(HeartRateService.class);
+    private final Gson g = new Gson();
+
 
     @Autowired
     public HeartRateService(HeartRateRepository heartRateRepository, KafkaTemplate<String, Object> kafkaTemplate, EmergencyRepository emergencyRepository) {
@@ -43,6 +46,18 @@ public class HeartRateService {
     public void listen(ConsumerRecord<String, Object> record) {
         // Traitement du message reçu
         System.out.println(record.value());
+        UserHeartRate userHeartRate = g.fromJson(record.value().toString(), UserHeartRate.class);
+        User current_user = getUser(Integer.parseInt(userHeartRate.getUserId()));
+        if (current_user == null)
+            logger.info("The user isn't registered");
+        else {
+            logger.info("Getting userHeartRate:" + userHeartRate);
+        }
+        if (checkEmergency(userHeartRate, current_user.getAge()) > 0) {
+            sendEmergency(userHeartRate);
+            saveEmergency(userHeartRate, checkEmergency(userHeartRate, current_user.getAge()));
+        }
+        saveHeartRateData(userHeartRate);
     }
 
     private int checkEmergency(UserHeartRate userHeartRate, int age){
@@ -73,27 +88,8 @@ public class HeartRateService {
         heartRateRepository.save(userHeartRate);
     }
 
-    @KafkaListener(topics = "hrdata-topic", groupId = "ncc")
-    public void receivedMessage(UserHeartRate userHeartRate) {
-        User current_user = getUser(Integer.parseInt(userHeartRate.getUserId()));
-        if (current_user == null)
-            logger.info("The user isn't registered");
-        else {
-            logger.info("Getting userHeartRate:" + userHeartRate);
-
-            int checkEmergency = checkEmergency(userHeartRate, current_user.getAge());
-            if (checkEmergency <= 0) {
-                sendEmergency(userHeartRate);
-                saveEmergency(userHeartRate, checkEmergency);
-            }
-
-            saveHeartRateData(userHeartRate);
-        }
-    }
-
-
     private User getUser(int userId) {
-        final String uri = "http://192.168.1.11:8088/users/get-user/" + userId;
+        final String uri = "${user.api.url}" + userId;
 
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<User> result = restTemplate.getForEntity(uri, User.class);
