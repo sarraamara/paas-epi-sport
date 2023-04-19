@@ -4,6 +4,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -22,6 +23,8 @@ import java.util.Map;
 public class KafkaConfig {
 
 
+    @Value("${spring.kafka.bootstrap_servers}")
+    private String hostname;
     @Bean
     public KafkaTemplate<String, Object> kafkaTemplate(ProducerFactory<String, Object> producerFactory) {
         return new KafkaTemplate<>(producerFactory);
@@ -30,7 +33,7 @@ public class KafkaConfig {
     @Bean
     public DefaultKafkaConsumerFactory consumerFactory() {
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "${spring.kafka.bootstrap_servers}:9092");
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, hostname);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "ncc");
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
