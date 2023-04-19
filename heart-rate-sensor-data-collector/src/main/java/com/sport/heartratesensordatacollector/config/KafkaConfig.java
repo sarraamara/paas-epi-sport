@@ -23,7 +23,7 @@ import java.util.Map;
 public class KafkaConfig {
 
 
-    @Value("${spring.kafka.bootstrap_servers}")
+    @Value("${spring.kafka.bootstrap-servers}")
     private String hostname;
     @Bean
     public KafkaTemplate<String, Object> kafkaTemplate(ProducerFactory<String, Object> producerFactory) {
