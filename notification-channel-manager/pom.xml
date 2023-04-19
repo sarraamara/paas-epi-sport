@@ -111,7 +111,6 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
-					<mainClass>com.baeldung.spring.kafka.KafkaApplication</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>
