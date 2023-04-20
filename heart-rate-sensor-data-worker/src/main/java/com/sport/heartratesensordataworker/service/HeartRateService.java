@@ -32,6 +32,8 @@ public class HeartRateService {
     private static final Logger logger = LoggerFactory.getLogger(HeartRateService.class);
     private final Gson g = new Gson();
 
+    @Value("${user.api.url}")
+    String USER_API_URL;
 
     @Autowired
     public HeartRateService(HeartRateRepository heartRateRepository, KafkaTemplate<String, Object> kafkaTemplate, EmergencyRepository emergencyRepository) {
@@ -89,7 +91,7 @@ public class HeartRateService {
     }
 
     private User getUser(int userId) {
-        final String uri = "${user.api.url}" + userId;
+        final String uri = USER_API_URL + userId;
 
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<User> result = restTemplate.getForEntity(uri, User.class);
