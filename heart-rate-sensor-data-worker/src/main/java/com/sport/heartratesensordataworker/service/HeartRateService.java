@@ -44,8 +44,9 @@ public class HeartRateService {
     private KafkaTemplate<String, Object> kafkaTemplate;
     @KafkaListener(topics = "hrdata-topic", groupId = "ncc")
     public void listen(ConsumerRecord<String, Object> record) {
+        logger.info("GETTING NEW MESSAGE");
         // Traitement du message reçu
-        System.out.println(record.value());
+        logger.info(record.value().toString());
         UserHeartRate userHeartRate = g.fromJson(record.value().toString(), UserHeartRate.class);
         User current_user = getUser(Integer.parseInt(userHeartRate.getUserId()));
         if (current_user == null)
