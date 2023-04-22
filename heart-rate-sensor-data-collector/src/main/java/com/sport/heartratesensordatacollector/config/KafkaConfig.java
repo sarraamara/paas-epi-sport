@@ -1,5 +1,6 @@
 package com.sport.heartratesensordatacollector.config;
 
+import com.sport.heartratesensordataworker.model.UserHeartRate;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -43,7 +44,7 @@ public class KafkaConfig {
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
 
-        return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), new JsonDeserializer<>(Object.class));
+        return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), new JsonDeserializer<>(UserHeartRate.class));
     }
 
     @Bean
