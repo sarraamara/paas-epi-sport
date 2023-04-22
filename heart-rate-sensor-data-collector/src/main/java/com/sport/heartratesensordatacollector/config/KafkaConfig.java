@@ -1,6 +1,6 @@
 package com.sport.heartratesensordatacollector.config;
 
-import com.sport.heartratesensordataworker.model.UserHeartRate;
+import com.sport.heartratesensordatacollector.model.UserHeartRate;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerConfig;
