@@ -45,12 +45,6 @@ public class EmergencyNotificationService {
     public void listenCoach1(ConsumerRecord<String, Object> record) {
         // Traitement du message reçu
         System.out.println("topic " + record.topic() + " = " + record.value());
-        CoachProfile coach = new CoachProfile(userCoachRepository.findUserCoachesByUserId(Integer.parseInt(record.topic().substring(6))));
-        if (record.value().toString().contains("present")) {
-            presentCoaches.add(new CoachProfile(Integer.parseInt(record.topic().substring(6))));
-        } else {
-            presentCoaches.remove(new CoachProfile(Integer.parseInt(record.topic().substring(6))));
-        }
     }
 
     public void sendMessage(String topic, Object payload) {
@@ -67,9 +61,8 @@ public class EmergencyNotificationService {
     }
 
     private void sendToNotifChannelQueue(UserCoachHeartRate notifContent) {
-        logger.info("Sending to notif channel queue :" +notifContent.toString());
+        logger.info("Sending to notif channel queue :" + notifContent.toString());
         sendMessage("notif-topic", notifContent);
-
     }
 
     @KafkaListener(topics = "hrdata-topic", groupId = "ncc")
