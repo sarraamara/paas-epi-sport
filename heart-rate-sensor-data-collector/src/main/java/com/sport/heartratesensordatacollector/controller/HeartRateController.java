@@ -1,7 +1,7 @@
 package com.sport.heartratesensordatacollector.controller;
 
 
-import com.sport.heartratesensordatacollector.model.UserHeartRate;
+import com.sport.heartratesensordataworker.model.UserHeartRate;
 import com.sport.heartratesensordatacollector.service.HeartRateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
