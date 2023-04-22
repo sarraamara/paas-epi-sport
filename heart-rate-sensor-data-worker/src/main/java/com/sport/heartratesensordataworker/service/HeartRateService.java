@@ -3,10 +3,9 @@ package com.sport.heartratesensordataworker.service;
 import com.google.gson.Gson;
 import com.sport.heartratesensordataworker.model.Emergency;
 import com.sport.heartratesensordataworker.model.User;
-import com.sport.heartratesensordataworker.model.UserHeartRate;
 import com.sport.heartratesensordataworker.repository.EmergencyRepository;
 import com.sport.heartratesensordataworker.repository.HeartRateRepository;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
+import com.sport.common.model.UserHeartRate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.sql.Timestamp;
@@ -34,21 +32,21 @@ public class HeartRateService {
     String USER_API_URL;
 
     @Autowired
-    public HeartRateService(HeartRateRepository heartRateRepository, KafkaTemplate<String, Object> kafkaTemplate, EmergencyRepository emergencyRepository) {
+    public HeartRateService(HeartRateRepository heartRateRepository, KafkaTemplate<String, UserHeartRate> kafkaTemplate, EmergencyRepository emergencyRepository) {
         this.heartRateRepository = heartRateRepository;
         this.kafkaTemplate = kafkaTemplate;
         this.emergencyRepository = emergencyRepository;
     }
 
     @Autowired
-    private KafkaTemplate<String, Object> kafkaTemplate;
-    @KafkaListener(topics = "hrdata-topic", groupId = "ncc")
-    public void listen(ConsumerRecord<String, Object> record) {
+    private KafkaTemplate<String, UserHeartRate> kafkaTemplate;
+    @KafkaListener(topics = "hrdata-topic", groupId = "ncc", containerFactory = "userHeartRateListener")
+    public void listen(UserHeartRate userHeartRate) {
         logger.info("GETTING NEW MESSAGE");
         // Traitement du message reçu
-        logger.info(record.value().toString());
-        UserHeartRate userHeartRate = g.fromJson(record.value().toString(), UserHeartRate.class);
-        User current_user = getUser(Integer.parseInt(userHeartRate.getUserId()));
+        logger.info(userHeartRate.toString());
+       // UserHeartRate userHeartRate = g.fromJson(record.value().toString(), UserHeartRate.class);
+        User current_user = getUser(Integer.parseInt(String.valueOf(userHeartRate.getUserId())));
         if (current_user == null)
             logger.info("The user isn't registered");
         else {
