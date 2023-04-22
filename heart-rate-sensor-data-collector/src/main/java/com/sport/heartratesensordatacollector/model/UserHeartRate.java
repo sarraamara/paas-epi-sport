@@ -14,6 +14,7 @@ import java.io.Serializable;
 @ToString
 @Component
 public class UserHeartRate implements Serializable {
+    private String id;
     private String userId;
     private int heartRate;
 }

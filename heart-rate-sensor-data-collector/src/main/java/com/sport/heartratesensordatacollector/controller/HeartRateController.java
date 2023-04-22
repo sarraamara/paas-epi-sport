@@ -30,6 +30,8 @@ public class HeartRateController {
 
     @PostMapping("/produce")
     public ResponseEntity<String> sendMessage(@RequestBody UserHeartRate userHeartRate) {
+        int id = (int) ((Math.random() * (999999 - 1)) + 1);
+        userHeartRate.setId(String.valueOf(id));
         logger.info("getting userHeartRate:" + userHeartRate);
         heartRateService.sendMessage("hrdata-topic",userHeartRate);
         logger.info("SmartWatch sent: " + userHeartRate);
