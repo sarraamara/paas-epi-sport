@@ -44,12 +44,6 @@ public class EmergencyNotificationService {
     @Autowired
     private KafkaTemplate<String, Object> kafkaTemplate;
 
-    @KafkaListener(topics = "coach*-topic", groupId = "ncc")
-    public void listenCoach(ConsumerRecord<String, Object> record) {
-        // Traitement du message reçu
-        System.out.println("topic " + record.topic() + " = " + record.value());
-    }
-
     private boolean verifyCoachSessionInCache(CoachProfile coach) {
         return redisTemplate.hasKey("coach:"+String.valueOf(coach.getCoachId()));
     }
