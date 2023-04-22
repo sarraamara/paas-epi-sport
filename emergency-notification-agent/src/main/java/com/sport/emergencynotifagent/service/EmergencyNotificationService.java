@@ -24,17 +24,12 @@ import java.util.List;
 public class EmergencyNotificationService {
 
     @Autowired
-    private RabbitTemplate rabbitTemplate;
-    @Autowired
-    private RedisTemplate redisTemplate;
-    @Autowired
     private UserCoachRepository userCoachRepository;
 
     @Value("${spring.rabbitmq.exchange}")
     private String exchange;
 
-
-    private String routingkey;
+    private List<CoachProfile> presentCoaches;
 
     private static final Logger logger = LoggerFactory.getLogger(EmergencyNotificationService.class);
 
@@ -50,6 +45,12 @@ public class EmergencyNotificationService {
     public void listenCoach1(ConsumerRecord<String, Object> record) {
         // Traitement du message reçu
         System.out.println("topic " + record.topic() + " = " + record.value());
+        CoachProfile coach = new CoachProfile(userCoachRepository.findUserCoachesByUserId(Integer.parseInt(record.topic().substring(6))));
+        if (record.value().toString().contains("present")) {
+            presentCoaches.add(new CoachProfile(Integer.parseInt(record.topic().substring(6))));
+        } else {
+            presentCoaches.remove(new CoachProfile(Integer.parseInt(record.topic().substring(6))));
+        }
     }
 
     public void sendMessage(String topic, Object payload) {
@@ -62,16 +63,16 @@ public class EmergencyNotificationService {
         return userCoachRepository.findUserCoachesByUserId(Integer.parseInt(userId));
     }
     private boolean verifyCoachSessionInCache(CoachProfile coach) {
-        return redisTemplate.hasKey("coach:"+String.valueOf(coach.getCoachId()));
+        return presentCoaches.contains(coach);
     }
 
     private void sendToNotifChannelQueue(UserCoachHeartRate notifContent) {
         logger.info("Sending to notif channel queue :" +notifContent.toString());
-        routingkey = "coachId"+notifContent.getUserCoach().getCoachProfile().getCoachId();
-        rabbitTemplate.convertAndSend(exchange,routingkey,notifContent);
+        sendMessage("notif-topic", notifContent);
 
     }
-    @RabbitListener(queues = "${spring.rabbitmq.queue_emergency}")
+
+    @KafkaListener(topics = "hrdata-topic", groupId = "ncc")
     public void receivedMessage(UserHeartRate userHeartRate) {
         logger.info("Received emergency related to user :" + userHeartRate);
 

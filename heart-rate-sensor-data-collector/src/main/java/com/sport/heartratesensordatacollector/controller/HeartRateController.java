@@ -31,9 +31,8 @@ public class HeartRateController {
     @PostMapping("/produce")
     public ResponseEntity<String> sendMessage(@RequestBody UserHeartRate userHeartRate) {
         logger.info("getting userHeartRate:" + userHeartRate);
-        heartRateService.sendMessage("hrdata-topic",userHeartRate.toString());
+        heartRateService.sendMessage("hrdata-topic",userHeartRate);
         logger.info("SmartWatch sent: " + userHeartRate);
         return ResponseEntity.ok(response);
     }
-
 }
