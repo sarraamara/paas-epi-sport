@@ -26,11 +26,6 @@ public class EmergencyNotificationService {
     @Autowired
     private UserCoachRepository userCoachRepository;
 
-    @Value("${spring.rabbitmq.exchange}")
-    private String exchange;
-
-    private List<CoachProfile> presentCoaches;
-
     private static final Logger logger = LoggerFactory.getLogger(EmergencyNotificationService.class);
 
     @Autowired
@@ -57,7 +52,8 @@ public class EmergencyNotificationService {
         return userCoachRepository.findUserCoachesByUserId(Integer.parseInt(userId));
     }
     private boolean verifyCoachSessionInCache(CoachProfile coach) {
-        return presentCoaches.contains(coach);
+        //TODO
+        return true;
     }
 
     private void sendToNotifChannelQueue(UserCoachHeartRate notifContent) {
