@@ -1,9 +1,8 @@
 package com.sport.emergencynotifagent.service;
 
-import com.sport.common.model.UserHeartRate;
-import com.sport.common.model.CoachProfile;
-import com.sport.common.model.UserCoach;
-import com.sport.common.model.UserCoachHeartRate;
+import com.sport.common.model.*;
+import com.sport.emergencynotifagent.model.UserCoachDto;
+import com.sport.emergencynotifagent.model.CoachProfileDto;
 
 import com.sport.emergencynotifagent.repository.UserCoachRepository;
 import org.slf4j.Logger;
@@ -28,11 +27,11 @@ public class EmergencyNotificationService {
     @Autowired
     private KafkaTemplate kafkaTemplate;
 
-    private boolean verifyCoachSessionInCache(CoachProfile coach) {
+    private boolean verifyCoachSessionInCache(CoachProfileDto coach) {
         return redisTemplate.hasKey("coach:"+String.valueOf(coach.getCoachId()));
     }
 
-    private List<UserCoach> lookForRelatedCoaches(String userId) {
+    private List<UserCoachDto> lookForRelatedCoaches(String userId) {
         logger.info("Look for related coaches to user " + userId + " in database.");
         return userCoachRepository.findUserCoachesByUserId(Integer.parseInt(userId));
     }
@@ -42,17 +41,30 @@ public class EmergencyNotificationService {
         kafkaTemplate.send("coach"+notifContent.getUserCoach().getUserCoachId()+"-topic", notifContent);
     }
 
-    @KafkaListener(topics = "emergency-topic", groupId = "ncc")
+    @KafkaListener(topics = "emergency-topic", groupId = "ncc", containerFactory = "userHeartRateListener")
     public void receivedMessage(UserHeartRate userHeartRate) {
         logger.info("Received emergency related to user :" + userHeartRate);
 
-        List<UserCoach> relatedCoaches = lookForRelatedCoaches(userHeartRate.getUserId());
+        List<UserCoachDto> relatedCoaches = lookForRelatedCoaches(userHeartRate.getUserId());
 
         if (relatedCoaches.size() != 0) {
-            for (UserCoach coach : relatedCoaches) {
+            for (UserCoachDto coach : relatedCoaches) {
                 if (verifyCoachSessionInCache(coach.getCoachProfile())) {
                     logger.info("Coach "+coach.getCoachProfile().getFirstname()+" "+coach.getCoachProfile().getLastname()+" is authenticated.");
-                    UserCoachHeartRate userCoachHeartRate = new UserCoachHeartRate(coach, userHeartRate.getHeartRate());
+                    UserProfile userProfile = new UserProfile(coach.getUserProfile().getUserId(),
+                            coach.getUserProfile().getLastname(),
+                            coach.getUserProfile().getFirstname(),
+                            coach.getUserProfile().getAge(),
+                            coach.getUserProfile().getWeight(),
+                            coach.getUserProfile().getHeight()
+                            );
+                    CoachProfile coachProfile = new CoachProfile(
+                            coach.getCoachProfile().getCoachId(),
+                            coach.getCoachProfile().getLastname(),
+                            coach.getCoachProfile().getFirstname()
+                    );
+                    UserCoach userCoach = new UserCoach(coach.getUserCoachId(),userProfile,coachProfile);
+                    UserCoachHeartRate userCoachHeartRate = new UserCoachHeartRate(userCoach, userHeartRate.getHeartRate());
                     sendToCoachQueue(userCoachHeartRate);
                 }
                 else{

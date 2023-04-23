@@ -21,38 +21,39 @@ import java.util.Map;
 @Configuration
 public class KafkaConfig {
 
-
     @Value("${spring.kafka.bootstrap-servers}")
     private String hostname;
-
     @Bean
     public KafkaTemplate kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 
     @Bean
-    public DefaultKafkaConsumerFactory consumerFactory() {
+    public ConsumerFactory<String, UserHeartRate>    consumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, hostname);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "ncc");
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
+        props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
-
-        return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), new JsonDeserializer<>(UserHeartRate.class));
+        return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), new JsonDeserializer<>(Object.class));
     }
 
     @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, Object>> kafkaListenerContainerFactory(
-            ConsumerFactory<String, Object> consumerFactory) {
-        ConcurrentKafkaListenerContainerFactory<String, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory);
+    public ConcurrentKafkaListenerContainerFactory<String, UserHeartRate> userHeartRateListener() {
+        ConcurrentKafkaListenerContainerFactory<String, UserHeartRate> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory()
+        );
         return factory;
     }
 
     @Bean
-    public ProducerFactory<String, UserHeartRate> producerFactory() {
+    public ProducerFactory<String, UserHeartRate> producerFactory()
+    {
 
         // Creating a Map
         Map<String, Object> config = new HashMap<>();

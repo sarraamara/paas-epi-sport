@@ -26,6 +26,8 @@ public class KafkaConfig {
     private String hostname;
     @Bean
     public KafkaTemplate kafkaTemplate() {
+
+        System.out.println("bonjour");
         return new KafkaTemplate<>(producerFactory());
     }
 
