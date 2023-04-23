@@ -39,20 +39,17 @@ public class HeartRateService {
     }
 
     @Autowired
-    private KafkaTemplate<String, UserHeartRate> kafkaTemplate;
+    private KafkaTemplate kafkaTemplate;
     @KafkaListener(topics = "hrdata-topic", groupId = "ncc", containerFactory = "userHeartRateListener")
     public void listen(UserHeartRate userHeartRate) {
-        logger.info("GETTING NEW MESSAGE");
-        // Traitement du message reçu
-        logger.info(userHeartRate.toString());
-       // UserHeartRate userHeartRate = g.fromJson(record.value().toString(), UserHeartRate.class);
+
         User current_user = getUser(Integer.parseInt(String.valueOf(userHeartRate.getUserId())));
         if (current_user == null)
             logger.info("The user isn't registered");
         else {
             logger.info("Getting userHeartRate:" + userHeartRate);
         }
-        if (checkEmergency(userHeartRate, current_user.getAge()) > 0) {
+        if (checkEmergency(userHeartRate, current_user.getAge()) <= 0) {
             sendEmergency(userHeartRate);
             saveEmergency(userHeartRate, checkEmergency(userHeartRate, current_user.getAge()));
         }

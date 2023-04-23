@@ -1,9 +1,9 @@
-package com.sport.emergencynotifagent.model;
+package com.sport.common.model;
 
+import jakarta.persistence.*;
 import lombok.*;
 
 
-import javax.persistence.*;
 
 @Getter
 @Setter
