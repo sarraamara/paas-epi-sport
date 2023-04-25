@@ -36,9 +36,9 @@ public class EmergencyNotificationService {
         return userCoachRepository.findUserCoachesByUserId(Integer.parseInt(userId));
     }
 
-    private void sendToCoachQueue(UserCoachHeartRate notifContent) {
+    private void sendToNotifTopic(UserCoachHeartRate notifContent) {
         logger.info("Sending to coach "+notifContent.getUserCoach().getUserCoachId() +" queue :" + notifContent.toString());
-        kafkaTemplate.send("coach"+notifContent.getUserCoach().getUserCoachId()+"-topic", notifContent);
+        kafkaTemplate.send("notif-topic", notifContent);
     }
 
     @KafkaListener(topics = "emergency-topic", groupId = "ncc", containerFactory = "userHeartRateListener")
@@ -65,7 +65,7 @@ public class EmergencyNotificationService {
                     );
                     UserCoach userCoach = new UserCoach(coach.getUserCoachId(),userProfile,coachProfile);
                     UserCoachHeartRate userCoachHeartRate = new UserCoachHeartRate(userCoach, userHeartRate.getHeartRate());
-                    sendToCoachQueue(userCoachHeartRate);
+                    sendToNotifTopic(userCoachHeartRate);
                 }
                 else{
                     logger.info("No authenticated coach in cache session.");
