@@ -37,7 +37,7 @@
 - name: "build app"
   command:
     cmd: mvn clean compile install
-    chdir: "{{ role_path }}/../../paas-epi-sport/{{ springboot_application_name }}"
+    chdir: "{{ role_path }}/../../{{ springboot_application_name }}"
   delegate_to: localhost
   retries: 5
   delay: 3

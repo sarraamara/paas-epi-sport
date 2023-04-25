@@ -1,7 +1,7 @@
 ansible_user: ncc
 # Install java by default. Optional
 springboot_java_install: false 
-springboot_src_file: paas-epi-sport/{{ springboot_application_name }}/target/{{ springboot_application_name }}-0.0.1-SNAPSHOT.jar 
+springboot_src_file: {{ springboot_application_name }}/target/{{ springboot_application_name }}-0.0.1-SNAPSHOT.jar
 springboot_src_url: ''
 # Deploy folder
 springboot_deploy_folder: /opt/{{ springboot_application_name }}
