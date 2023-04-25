@@ -29,7 +29,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, UserHeartRate>    consumerFactory() {
+    public ConsumerFactory<String, UserHeartRate> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, hostname);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "ncc");
