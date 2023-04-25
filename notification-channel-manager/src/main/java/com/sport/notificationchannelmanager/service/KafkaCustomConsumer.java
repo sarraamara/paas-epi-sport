@@ -4,6 +4,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,10 +13,16 @@ import java.util.Properties;
 @Service
 public class KafkaCustomConsumer {
 
+    @Value("${spring.kafka.bootstrap-servers}")
+    private String hostname;
+
+    @Value("${spring.kafka.consumer.group-id}")
+    private String groupId;
+
     public ConsumerRecord<String, String> getLastMessage(String topic) {
         Properties props = new Properties();
-        props.put("bootstrap.servers", "${spring.kafka.bootstrap-servers}:9092");
-        props.put("group.id", "${spring.kafka.consumer.group-id}");
+        props.put("bootstrap.servers", hostname);
+        props.put("group.id", groupId);
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 
