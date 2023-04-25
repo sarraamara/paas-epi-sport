@@ -1,4 +1,4 @@
-package com.sport.emergencynotifagent.model;
+package com.sport.common.model;
 
 import lombok.*;
 

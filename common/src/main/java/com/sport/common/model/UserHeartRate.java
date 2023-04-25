@@ -1,10 +1,10 @@
-package com.sport.heartratesensordatacollector.model;
+package com.sport.common.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.springframework.stereotype.Component;
+
 
 import java.io.Serializable;
 
@@ -12,8 +12,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Component
-public class UserHeartRate implements Serializable {
+public class UserHeartRate {
+    private String id;
     private String userId;
     private int heartRate;
 }

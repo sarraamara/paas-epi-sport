@@ -12,7 +12,7 @@ import javax.persistence.*;
 @ToString
 @Entity
 @Table(name = "userCoach")
-public class UserCoach {
+public class UserCoachDto {
 
     @Id
     @Column(name="userCoachId")
@@ -20,10 +20,10 @@ public class UserCoach {
 
     @ManyToOne
     @JoinColumn(name = "userId")
-    private UserProfile userProfile;
+    private UserProfileDto userProfile;
 
     @ManyToOne
     @JoinColumn(name = "coachId")
-    private CoachProfile coachProfile;
+    private CoachProfileDto coachProfile;
 
 }

@@ -1,7 +1,6 @@
-package com.sport.notificationchannelmanager;
+package com.sport.notificationchannelmanager.repository;
 
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
+import com.sport.notificationchannelmanager.model.Coach;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
