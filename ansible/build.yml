@@ -5,18 +5,7 @@
     - name: "get last version"
       command: 
         cmd: git pull
-        chdir: "{{ playbook_dir }}/ansible-springboot/files/paas-epi-sport/"
-
-        #    - name: "build app"
-        #      command:
-        #        cmd: mvn clean compile install
-        #        chdir: "{{ playbook_dir }}/ansible-springboot/files/paas-epi-sport/{{ item }}"
-        #      loop: 
-        #        - users-api
-        #        - notification-channel-manager
-        #        - heart-rate-sensor-data-collector
-        #        - heart-rate-sensor-data-worker
-        #        - emergency-notification-agent
+        chdir: "{{ playbook_dir }}/../paas-epi-sport/"
 
 - name: BUILD EVERYTHING
   hosts: all
