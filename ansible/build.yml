@@ -5,7 +5,7 @@
     - name: "get last version"
       command: 
         cmd: git pull
-        chdir: "{{ playbook_dir }}/../paas-epi-sport/"
+        chdir: "{{ playbook_dir }}/../"
 
 - name: BUILD EVERYTHING
   hosts: all
