@@ -1,10 +1,8 @@
 spring:
-  rabbitmq:
-    host: 192.168.1.2
-    password: test
-    port: 15672
-    username: test
-    exchange: epi.sport.exchange
-    queue_hr: userheartrate.queue
-    routingkey_hr: userheartrate.routingkey
-    routingkey_emergency: emergency.routingkey
+  kafka:
+    bootstrap-servers: 192.168.1.13:9092
+    consumer:
+      group-id: ncc
+      auto-offset-reset: earliest
+      properties:
+        spring.json.trusted.packages: "*"

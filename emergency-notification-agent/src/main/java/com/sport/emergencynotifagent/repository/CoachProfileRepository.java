@@ -1,6 +1,6 @@
 package com.sport.emergencynotifagent.repository;
 
-import com.sport.emergencynotifagent.model.CoachProfile;
+import com.sport.common.model.CoachProfile;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;

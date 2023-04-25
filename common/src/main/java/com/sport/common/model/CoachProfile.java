@@ -1,6 +1,9 @@
-package com.sport.notificationchannelmanager.model;
+package com.sport.common.model;
+
 
 import lombok.*;
+
+
 
 @Getter
 @Setter
@@ -8,6 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 public class CoachProfile {
+
 
     private int coachId;
 

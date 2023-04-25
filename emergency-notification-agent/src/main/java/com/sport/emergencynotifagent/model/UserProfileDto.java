@@ -1,5 +1,4 @@
 package com.sport.emergencynotifagent.model;
-
 import lombok.*;
 
 import javax.persistence.Column;
@@ -13,13 +12,18 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @ToString
 @Entity
-@Table(name = "coachProfile")
-public class CoachProfile {
+@Table(name = "user_profile")
+public class UserProfileDto {
 
     @Id
-    @Column(name = "coachId")
-    private int coachId;
+    @Column(name = "user_id")
+    private int userId;
 
     private String lastname;
     private String firstname;
+    private int age;
+    private int weight;
+    private int height;
+
+
 }

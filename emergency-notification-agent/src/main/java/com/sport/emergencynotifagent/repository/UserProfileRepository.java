@@ -1,6 +1,6 @@
 package com.sport.emergencynotifagent.repository;
 
-import com.sport.emergencynotifagent.model.UserProfile;
+import com.sport.common.model.UserProfile;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

@@ -37,17 +37,18 @@
 - name: "build app"
   command:
     cmd: mvn clean compile install
-    chdir: "{{ role_path }}/files/paas-epi-sport/{{ springboot_application_name }}"
+    chdir: "{{ playbook_dir }}/../{{ springboot_application_name }}"
   delegate_to: localhost
   retries: 5
   delay: 3
 
 - name: "Copy jar application"
   copy:
-    src: "{{ springboot_src_file }}"
+    src: "{{ playbook_dir }}/../{{ springboot_src_file }}"
     dest: "{{ springboot_deploy_folder }}/{{ springboot_application_name }}.jar"
     owner: "{{ springboot_user }}"
     group: "{{ springboot_group }}"
+    force: true
     mode: "u+x"
   when: springboot_src_file is defined and springboot_src_file|length > 0
   notify:

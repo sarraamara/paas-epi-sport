@@ -1,9 +1,11 @@
 spring:
-  rabbitmq:
-    host: 192.168.1.2
-    password: test
-    port: 15672
-    username: test
-    exchange: epi.sport.exchange
-    queue_notif: notif.queue
-    routingkey_notif: notif.routingkey
+  redis:
+    hostname: 192.168.1.6
+    port: 6379
+  kafka:
+    bootstrap-servers: 192.168.1.13:9092
+    consumer:
+      group-id: ncc
+      auto-offset-reset: earliest
+      properties:
+        spring.json.trusted.packages: "*"

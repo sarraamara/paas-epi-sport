@@ -1,7 +1,7 @@
 package com.sport.heartratesensordatacollector.controller;
 
 
-import com.sport.heartratesensordatacollector.model.UserHeartRate;
+import com.sport.common.model.UserHeartRate;
 import com.sport.heartratesensordatacollector.service.HeartRateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/sensor/hr/")
 public class HeartRateController {
 
-    private HeartRateService heartRateService;
+    private final HeartRateService heartRateService;
     private static final Logger logger = LoggerFactory.getLogger(HeartRateController.class);
 
     @Autowired
@@ -30,10 +30,10 @@ public class HeartRateController {
 
     @PostMapping("/produce")
     public ResponseEntity<String> sendMessage(@RequestBody UserHeartRate userHeartRate) {
+
         logger.info("getting userHeartRate:" + userHeartRate);
-        heartRateService.sendMessage(userHeartRate);
+        heartRateService.sendMessage("hrdata-topic",userHeartRate);
         logger.info("SmartWatch sent: " + userHeartRate);
         return ResponseEntity.ok(response);
     }
-
 }

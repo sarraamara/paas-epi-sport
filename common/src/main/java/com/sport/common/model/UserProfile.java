@@ -1,6 +1,8 @@
-package com.sport.notificationchannelmanager.model;
+package com.sport.common.model;
 
 import lombok.*;
+
+
 
 @Getter
 @Setter
@@ -8,6 +10,8 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 public class UserProfile {
+
+
     private int userId;
 
     private String lastname;
@@ -15,5 +19,6 @@ public class UserProfile {
     private int age;
     private int weight;
     private int height;
+
 
 }
