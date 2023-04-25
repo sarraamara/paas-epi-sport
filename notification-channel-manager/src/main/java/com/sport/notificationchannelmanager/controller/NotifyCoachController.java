@@ -1,7 +1,6 @@
 package com.sport.notificationchannelmanager.controller;
 
 import com.sport.common.model.UserCoachHeartRate;
-import com.sport.notificationchannelmanager.service.KafkaCustomConsumer;
 import com.sport.notificationchannelmanager.repository.NotifyCoachRepository;
 import com.sport.notificationchannelmanager.model.Coach;
 
@@ -26,9 +25,6 @@ public class NotifyCoachController {
     NotifyCoachRepository notifyCoachRepository;
 
     @Autowired
-    KafkaCustomConsumer kafkaConsumer;
-
-    @Autowired
     private RedisTemplate<String, String> Redistemplate;
 
     private static final Logger LOGGER = Logger.getLogger(NotifyCoachController.class.getName());
@@ -36,20 +32,19 @@ public class NotifyCoachController {
     @Autowired
     private KafkaTemplate<String, Object> kafkaTemplate;
 
+    private final List<UserCoachHeartRate> userCoachHeartRates = new ArrayList<>();
 
     @PostMapping("/save-session/{coachId}")
     @ResponseStatus(HttpStatus.CREATED)
     public void saveSession(@PathVariable String coachId) {
         LOGGER.info("SAVING SESSION, COACHID="+coachId);
         Redistemplate.opsForValue().set(STRING_KEY_PREFIX + coachId, "coach"+coachId,10, TimeUnit.MINUTES);
-        kafkaTemplate.send("coach"+coachId+"-topic", "present");
     }
 
     @PostMapping("/del-session/{coachId}")
     public void delSession(@PathVariable String coachId) {
         LOGGER.info("DELETE SESSION, COACHID="+coachId);
         Redistemplate.opsForValue().getAndDelete(STRING_KEY_PREFIX + coachId);
-        kafkaTemplate.send("coach"+coachId+"-topic", "absent");
     }
     @GetMapping("/get-session/{coachId}")
     public Optional<Coach> getCoachSession(@PathVariable String coachId) {
@@ -71,10 +66,18 @@ public class NotifyCoachController {
 
     @GetMapping("/get-notif/{coachId}")
     public UserCoachHeartRate getNotification(@PathVariable int coachId) {
-        String topic_name = "coach"+coachId+"-topic";
-        System.out.println(kafkaConsumer.getLastMessage(topic_name).value());
-        Object userCoachHeartRate = kafkaConsumer.getLastMessage(topic_name).value();
+        for (UserCoachHeartRate userCoachHeartRate : userCoachHeartRates) {
+            if (userCoachHeartRate.getUserCoach().getCoachProfile().getCoachId() == coachId) {
+                userCoachHeartRates.remove(userCoachHeartRate);
+                return userCoachHeartRate;
+            }
+        }
+        return null;
+    }
 
-        return (UserCoachHeartRate) userCoachHeartRate;
+    @KafkaListener(topics = "notif-topic", groupId = "ncc", containerFactory = "userHeartRateListener")
+    public void receivedMessage(UserCoachHeartRate userCoachHeartRate) {
+        LOGGER.info("Received emergency related to user :" + userCoachHeartRate);
+        userCoachHeartRates.add(userCoachHeartRate);
     }
 }
