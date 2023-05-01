@@ -15,3 +15,10 @@ spring:
 server:
   port: 8081
 
+mqtt:
+  client:
+    clientId: hrdata-collector
+  topic: hrdata-topic
+  broker:
+    url: tcp://192.168.1.8:1883
+

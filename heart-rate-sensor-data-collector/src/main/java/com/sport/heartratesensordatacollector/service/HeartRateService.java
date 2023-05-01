@@ -9,14 +9,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class HeartRateService {
 
+
     @Autowired
     private KafkaTemplate<String, UserHeartRate> kafkaTemplate;
-   /* @KafkaListener(topics = "hrdata-topic", groupId = "ncc")
-    public void listen(ConsumerRecord<String, Object> record) {
-        // Traitement du message reçu
-        System.out.println(record.value());
-    }*/
-
 
     public void sendMessage(String topic, UserHeartRate payload) {
         kafkaTemplate.send(topic, payload);
